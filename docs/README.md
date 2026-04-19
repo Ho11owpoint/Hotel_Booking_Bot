@@ -10,7 +10,7 @@ for Pages to rebuild, relaunch the app.
 ## Structure
 
 ```
-web/
+docs/
 ├── index.html              Landing page (hotel hero view + booking button)
 ├── chat.html               Chat interface (dialog + calendar picker)
 ├── styles/
@@ -25,18 +25,21 @@ web/
     └── hotel-hero.svg      Twilight illustration of the hotel
 ```
 
+(GitHub Pages only supports `/` or `/docs` as the deploy folder — that's
+why the static site lives here rather than in `/web`.)
+
 ## Enabling GitHub Pages
 
 1. **Settings → Pages** in your repo.
 2. **Source**: "Deploy from a branch".
-3. **Branch**: `main`, **Folder**: `/web`.
+3. **Branch**: `main`, **Folder**: `/docs`.
 4. Save; within a minute your site is live at
    `https://YOUR-USERNAME.github.io/Hotel_Booking_Bot/`.
 
 ## Running locally
 
 ```bash
-cd web
+cd docs
 python -m http.server 8000
 # then open http://127.0.0.1:8000
 ```

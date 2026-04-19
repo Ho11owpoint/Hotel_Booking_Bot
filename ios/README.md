@@ -23,7 +23,7 @@ Designed and tuned for **iPhone 14 Pro** (393 × 852 pt, Dynamic Island aware).
    `github.com/YOUR-USERNAME/Hotel_Booking_Bot`).
 2. Go to **Settings → Pages**.
 3. Under **Build and deployment → Source**, pick **"Deploy from a branch"**.
-4. Branch: `main` (or whatever your default is). Folder: **`/web`**.
+4. Branch: `main` (or whatever your default is). Folder: **`/docs`**.
 5. Click **Save**. Pages gives you a URL like
    `https://YOUR-USERNAME.github.io/Hotel_Booking_Bot/`.
 6. Open it in a browser — you should see the landing page with the
@@ -129,7 +129,7 @@ ios/
 | App display name                      | `BirolHotel/Info.plist` → `CFBundleDisplayName` |
 | Splash screen / loading UI            | `BirolHotel/ContentView.swift`       |
 | Cache behaviour, back-gestures        | `BirolHotel/WebView.swift`           |
-| Anything UI-facing (pages, chat, etc.)| `../web/` (deployed via GitHub Pages) |
+| Anything UI-facing (pages, chat, etc.)| `../docs/` (deployed via GitHub Pages) |
 
 ---
 
@@ -138,7 +138,7 @@ ios/
 | Symptom                                                        | Fix |
 |----------------------------------------------------------------|-----|
 | White screen on launch                                         | Verify `AppConfig.landingURL` points at an HTTPS URL that returns 200. Test it in Safari on the iPhone first. |
-| Pages URL returns 404                                          | Confirm *Settings → Pages* is set to serve the `/web` folder of your default branch. The first deploy takes ~1 min. |
+| Pages URL returns 404                                          | Confirm *Settings → Pages* is set to serve the `/docs` folder of your default branch. The first deploy takes ~1 min. |
 | "Untrusted Developer" alert on first launch                    | Settings → General → VPN & Device Management → trust your Apple ID. |
 | App re-downloads HTML every launch (slow)                      | Expected — that's how updates flow in. Pages caches are CDN-fast so this is usually <1 s. |
 | Local bookings disappeared                                     | They live in WebView localStorage and are cleared if iOS evicts the WebKit store. Not a bug — bookings are a prototype. |
