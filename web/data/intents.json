@@ -1,0 +1,149 @@
+{
+  "intents": [
+    {
+      "tag": "greet",
+      "patterns": [
+        "hi", "hello", "hey", "good morning", "good evening", "good afternoon",
+        "greetings", "howdy", "hi there", "hello there", "hey there",
+        "hi bot", "hello bot", "what's up", "yo"
+      ],
+      "responses": [
+        "Hello! Welcome to Birol Hotel. I'm Aria, your booking assistant. Would you like to book a room?",
+        "Hi there! I'm Aria from Birol Hotel. How can I help you today?",
+        "Greetings! Welcome to Birol Hotel. Shall we start a new booking?"
+      ]
+    },
+    {
+      "tag": "book_room",
+      "patterns": [
+        "I want to book a room", "book a room", "I would like to book", "I need a room",
+        "can I book a hotel room", "reserve a room", "I want to make a reservation",
+        "room booking", "I'd like to reserve", "make a booking", "new booking",
+        "start booking", "i want to stay at your hotel", "can i get a room"
+      ],
+      "responses": [
+        "Of course! I'd be happy to help you book a room. May I start with your name, please?",
+        "Perfect! Let's get you booked in. Could you tell me your full name to begin?"
+      ]
+    },
+    {
+      "tag": "provide_name",
+      "patterns": [
+        "my name is", "i am", "i'm", "this is", "call me", "it's", "name:", "full name is"
+      ],
+      "responses": [
+        "Thank you, {name}! When would you like to stay with us? Please share your check-in and check-out dates."
+      ]
+    },
+    {
+      "tag": "provide_dates",
+      "patterns": [
+        "from to", "between and", "checkin checkout", "check-in check-out",
+        "staying from", "arriving on", "leaving on", "for nights",
+        "tomorrow", "next week", "this weekend"
+      ],
+      "responses": [
+        "Great — noted {checkin} to {checkout} ({nights} night(s)). How many guests will be staying?"
+      ]
+    },
+    {
+      "tag": "provide_guests",
+      "patterns": [
+        "guests", "people", "adults", "we are", "just me", "alone",
+        "couple", "family of", "group of"
+      ],
+      "responses": [
+        "Got it — {guests} guest(s). Would you like to include breakfast with your stay? (yes/no)"
+      ]
+    },
+    {
+      "tag": "breakfast_yes",
+      "patterns": [
+        "yes breakfast", "with breakfast", "include breakfast", "yes please",
+        "yes", "sure", "yep", "yeah", "of course", "absolutely", "add breakfast"
+      ],
+      "responses": [
+        "Excellent — breakfast will be included. How would you like to pay: credit card, debit card, or pay at the hotel?"
+      ]
+    },
+    {
+      "tag": "breakfast_no",
+      "patterns": [
+        "no breakfast", "without breakfast", "room only", "skip breakfast",
+        "no", "nope", "nah", "no thanks", "no thank you"
+      ],
+      "responses": [
+        "Understood — no breakfast. How would you like to pay: credit card, debit card, or pay at the hotel?"
+      ]
+    },
+    {
+      "tag": "provide_payment",
+      "patterns": [
+        "credit card", "debit card", "visa", "mastercard", "amex",
+        "pay at hotel", "at the hotel", "on arrival", "cash", "paypal"
+      ],
+      "responses": [
+        "Payment method noted: {payment}. Let me summarise your booking..."
+      ]
+    },
+    {
+      "tag": "confirm_yes",
+      "patterns": [
+        "confirm", "yes confirm", "confirm booking", "that's correct", "correct",
+        "looks good", "go ahead", "proceed", "book it", "yes please"
+      ],
+      "responses": [
+        "Your booking is confirmed! Reference: {booking_id}. A confirmation has been prepared. Is there anything else I can help with?"
+      ]
+    },
+    {
+      "tag": "confirm_no",
+      "patterns": [
+        "cancel", "no cancel", "start over", "restart", "redo",
+        "change", "that's wrong", "not correct"
+      ],
+      "responses": [
+        "No problem — let's start again. May I have your name, please?"
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "bye", "goodbye", "see you", "thanks bye", "that's all", "nothing else",
+        "good night", "cheers", "thank you bye"
+      ],
+      "responses": [
+        "Thank you for choosing Birol Hotel. Have a wonderful day!",
+        "You're welcome! We look forward to hosting you. Safe travels!"
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": [
+        "thank you", "thanks", "thx", "appreciate it", "many thanks", "cheers"
+      ],
+      "responses": [
+        "You're most welcome! Anything else I can help with?",
+        "My pleasure! Let me know if you need anything else."
+      ]
+    },
+    {
+      "tag": "help",
+      "patterns": [
+        "help", "what can you do", "how does this work", "instructions",
+        "what do you do", "options", "menu"
+      ],
+      "responses": [
+        "I can help you book a room at Birol Hotel. I'll ask for your name, dates, number of guests, breakfast preference, and payment method. Just say 'book a room' to begin."
+      ]
+    },
+    {
+      "tag": "fallback",
+      "patterns": [],
+      "responses": [
+        "I'm sorry, I didn't quite catch that. Could you rephrase? (You can say 'help' at any time.)",
+        "Hmm, I'm not sure I understood. Could you try that again?"
+      ]
+    }
+  ]
+}

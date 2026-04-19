@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 800 600"
+     preserveAspectRatio="xMidYMid slice"
+     role="img"
+     aria-label="Twilight view of the Birol Hotel on the Bosphorus">
+
+  <defs>
+    <!-- Sky: deep plum → teal-navy gradient -->
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#2a1350"/>
+      <stop offset="35%"  stop-color="#1b2069"/>
+      <stop offset="65%"  stop-color="#124766"/>
+      <stop offset="100%" stop-color="#0a3248"/>
+    </linearGradient>
+
+    <!-- Sun / moon halo -->
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#ffd6a0" stop-opacity="0.9"/>
+      <stop offset="40%"  stop-color="#ff8b6b" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#ff8b6b" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Water: horizon lighter, near side dark -->
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#1a5b70"/>
+      <stop offset="60%"  stop-color="#0b2a3f"/>
+      <stop offset="100%" stop-color="#06141f"/>
+    </linearGradient>
+
+    <!-- Window glow -->
+    <radialGradient id="winGlow" cx="50%" cy="50%" r="65%">
+      <stop offset="0%"   stop-color="#ffe8a8" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#ffba5c" stop-opacity="0.0"/>
+    </radialGradient>
+
+    <!-- Distant city shimmer -->
+    <linearGradient id="cityFade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"  stop-color="#0a1a2e" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#0a1a2e" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Hotel facade — warm cream gradient -->
+    <linearGradient id="facade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#e9d6b0"/>
+      <stop offset="100%" stop-color="#8a6d48"/>
+    </linearGradient>
+
+    <!-- Reusable lit window -->
+    <symbol id="lit" viewBox="0 0 10 14">
+      <rect width="10" height="14" rx="1" fill="#ffd978"/>
+      <rect x="0" y="0" width="10" height="14" rx="1"
+            fill="url(#winGlow)" opacity="0.9"/>
+    </symbol>
+  </defs>
+
+  <!-- Sky -->
+  <rect width="800" height="420" fill="url(#sky)"/>
+
+  <!-- Sun / moon glow -->
+  <circle cx="560" cy="165" r="180" fill="url(#sunGlow)"/>
+  <circle cx="560" cy="165" r="28"  fill="#ffe1b0"/>
+
+  <!-- Stars -->
+  <g fill="#ffffff" opacity="0.85">
+    <circle cx="60"  cy="50"  r="1.1"/>
+    <circle cx="120" cy="90"  r="0.7"/>
+    <circle cx="220" cy="40"  r="1.0"/>
+    <circle cx="310" cy="110" r="0.8"/>
+    <circle cx="400" cy="60"  r="1.2"/>
+    <circle cx="140" cy="180" r="0.8"/>
+    <circle cx="70"  cy="220" r="0.9"/>
+    <circle cx="260" cy="260" r="0.6"/>
+    <circle cx="690" cy="40"  r="0.8"/>
+    <circle cx="740" cy="130" r="1.1"/>
+    <circle cx="640" cy="220" r="0.7"/>
+    <circle cx="780" cy="270" r="0.9"/>
+  </g>
+
+  <!-- Distant city silhouette -->
+  <g opacity="0.9">
+    <path d="M0,380
+             L0,350 L30,350 L30,335 L55,335 L55,345
+             L85,345 L85,320 L110,320 L110,340
+             L150,340 L150,325 L170,325 L170,345
+             L210,345 L210,330 L240,330 L240,355
+             L290,355 L290,340 L320,340 L320,350
+             L380,350 L380,332 L410,332 L410,348
+             L460,348 L460,338 L500,338 L500,360
+             L560,360 L560,345 L600,345 L600,358
+             L650,358 L650,342 L680,342 L680,360
+             L730,360 L730,350 L800,350 L800,380 Z"
+          fill="#0a1a2e"/>
+    <!-- Tiny lit windows of the distant city -->
+    <g fill="#ffd978" opacity="0.9">
+      <rect x="38"  y="357" width="2" height="3"/>
+      <rect x="95"  y="328" width="2" height="3"/>
+      <rect x="115" y="345" width="2" height="3"/>
+      <rect x="220" y="340" width="2" height="3"/>
+      <rect x="300" y="346" width="2" height="3"/>
+      <rect x="388" y="340" width="2" height="3"/>
+      <rect x="470" y="347" width="2" height="3"/>
+      <rect x="515" y="350" width="2" height="3"/>
+      <rect x="570" y="351" width="2" height="3"/>
+      <rect x="660" y="350" width="2" height="3"/>
+      <rect x="742" y="360" width="2" height="3"/>
+    </g>
+  </g>
+
+  <!-- Water (below horizon) -->
+  <rect y="420" width="800" height="180" fill="url(#water)"/>
+
+  <!-- Sun reflection on water -->
+  <g opacity="0.55">
+    <rect x="540" y="428" width="40" height="3" fill="#ffc27a" rx="1.5"/>
+    <rect x="548" y="440" width="28" height="2" fill="#ffc27a" rx="1"/>
+    <rect x="544" y="452" width="36" height="2" fill="#ffb36a" rx="1"/>
+    <rect x="550" y="464" width="24" height="2" fill="#ffb36a" rx="1"/>
+    <rect x="552" y="476" width="20" height="2" fill="#ffa860" rx="1"/>
+  </g>
+  <!-- Ripple highlights -->
+  <g fill="#9fcfe0" opacity="0.35">
+    <rect x="80"  y="480" width="50" height="1" rx="0.5"/>
+    <rect x="170" y="500" width="35" height="1" rx="0.5"/>
+    <rect x="260" y="520" width="60" height="1" rx="0.5"/>
+    <rect x="400" y="495" width="30" height="1" rx="0.5"/>
+    <rect x="460" y="535" width="45" height="1" rx="0.5"/>
+    <rect x="620" y="515" width="40" height="1" rx="0.5"/>
+    <rect x="690" y="555" width="70" height="1" rx="0.5"/>
+  </g>
+
+  <!-- ================ Birol Hotel building ================ -->
+  <!-- Classical boutique hotel: three wings, central tower, warm glowing windows -->
+  <g>
+    <!-- Ground shadow -->
+    <ellipse cx="400" cy="425" rx="260" ry="6" fill="#000" opacity="0.45"/>
+
+    <!-- Left wing -->
+    <rect x="175" y="320" width="105" height="100" fill="url(#facade)"/>
+    <!-- Main block -->
+    <rect x="280" y="255" width="240" height="165" fill="url(#facade)"/>
+    <!-- Right wing -->
+    <rect x="520" y="320" width="105" height="100" fill="url(#facade)"/>
+
+    <!-- Roof lines -->
+    <polygon points="175,320 280,296 280,255 175,288" fill="#5d4528"/>
+    <polygon points="280,255 400,225 520,255" fill="#6b502f"/>
+    <polygon points="520,255 520,296 625,320 625,288" fill="#5d4528"/>
+    <polygon points="400,225 520,255 280,255" fill="#5d4528" opacity="0.3"/>
+
+    <!-- Tower -->
+    <rect x="375" y="195" width="50" height="60" fill="#d4bc92"/>
+    <polygon points="375,195 425,195 400,165" fill="#4a371f"/>
+    <rect x="395" y="155" width="10" height="14" fill="#b88a4a"/>
+    <circle cx="400" cy="152" r="3" fill="#ffd978"/>
+
+    <!-- Central grand entrance -->
+    <rect x="380" y="360" width="40" height="60" fill="#3a2716"/>
+    <path d="M380,360 Q400,345 420,360 L420,420 L380,420 Z"
+          fill="#5d4a33" opacity="0.4"/>
+    <!-- Warm entrance glow spilling onto ground -->
+    <ellipse cx="400" cy="425" rx="70" ry="10" fill="#ffd37a" opacity="0.35"/>
+
+    <!-- Windows — main block (4 rows × 6 cols) -->
+    <g>
+      <!-- row 1 -->
+      <use href="#lit" x="300" y="270" width="14" height="18"/>
+      <use href="#lit" x="330" y="270" width="14" height="18"/>
+      <use href="#lit" x="360" y="270" width="14" height="18"/>
+      <use href="#lit" x="426" y="270" width="14" height="18"/>
+      <use href="#lit" x="456" y="270" width="14" height="18"/>
+      <use href="#lit" x="486" y="270" width="14" height="18"/>
+      <!-- row 2 -->
+      <use href="#lit" x="300" y="300" width="14" height="18"/>
+      <use href="#lit" x="330" y="300" width="14" height="18" opacity="0.55"/>
+      <use href="#lit" x="360" y="300" width="14" height="18"/>
+      <use href="#lit" x="390" y="300" width="14" height="18"/>
+      <use href="#lit" x="426" y="300" width="14" height="18"/>
+      <use href="#lit" x="456" y="300" width="14" height="18" opacity="0.4"/>
+      <use href="#lit" x="486" y="300" width="14" height="18"/>
+      <!-- row 3 -->
+      <use href="#lit" x="300" y="330" width="14" height="18"/>
+      <use href="#lit" x="330" y="330" width="14" height="18"/>
+      <use href="#lit" x="360" y="330" width="14" height="18"/>
+      <use href="#lit" x="390" y="330" width="14" height="18"/>
+      <use href="#lit" x="426" y="330" width="14" height="18"/>
+      <use href="#lit" x="456" y="330" width="14" height="18"/>
+      <use href="#lit" x="486" y="330" width="14" height="18" opacity="0.6"/>
+    </g>
+
+    <!-- Left wing windows -->
+    <g>
+      <use href="#lit" x="192" y="335" width="12" height="16"/>
+      <use href="#lit" x="214" y="335" width="12" height="16" opacity="0.55"/>
+      <use href="#lit" x="236" y="335" width="12" height="16"/>
+      <use href="#lit" x="258" y="335" width="12" height="16"/>
+      <use href="#lit" x="192" y="365" width="12" height="16"/>
+      <use href="#lit" x="214" y="365" width="12" height="16"/>
+      <use href="#lit" x="236" y="365" width="12" height="16" opacity="0.4"/>
+      <use href="#lit" x="258" y="365" width="12" height="16"/>
+    </g>
+    <!-- Right wing windows -->
+    <g>
+      <use href="#lit" x="530" y="335" width="12" height="16"/>
+      <use href="#lit" x="552" y="335" width="12" height="16"/>
+      <use href="#lit" x="574" y="335" width="12" height="16" opacity="0.5"/>
+      <use href="#lit" x="596" y="335" width="12" height="16"/>
+      <use href="#lit" x="530" y="365" width="12" height="16" opacity="0.6"/>
+      <use href="#lit" x="552" y="365" width="12" height="16"/>
+      <use href="#lit" x="574" y="365" width="12" height="16"/>
+      <use href="#lit" x="596" y="365" width="12" height="16"/>
+    </g>
+
+    <!-- "BIROL" sign on the main block -->
+    <text x="400" y="245" text-anchor="middle"
+          font-family="Georgia, 'Playfair Display', serif"
+          font-weight="700"
+          font-size="14"
+          letter-spacing="4"
+          fill="#ffe4a8"
+          opacity="0.95">BIROL</text>
+  </g>
+
+  <!-- Hotel reflection on water (soft, vertical) -->
+  <g opacity="0.22" transform="translate(0,840) scale(1,-1)">
+    <rect x="280" y="255" width="240" height="165" fill="url(#facade)"/>
+    <rect x="175" y="320" width="105" height="100" fill="url(#facade)"/>
+    <rect x="520" y="320" width="105" height="100" fill="url(#facade)"/>
+    <rect x="375" y="195" width="50" height="60" fill="#d4bc92"/>
+  </g>
+
+  <!-- Light fog at the waterline -->
+  <rect x="0" y="415" width="800" height="20" fill="#0a3248" opacity="0.55"/>
+  <rect x="0" y="420" width="800" height="10" fill="#1a5b70" opacity="0.25"/>
+
+  <!-- Gentle boat on the Bosphorus -->
+  <g transform="translate(130,510)">
+    <path d="M0,0 Q15,8 30,0 Z" fill="#0a1a2e"/>
+    <rect x="11" y="-10" width="8" height="10" fill="#0a1a2e"/>
+    <circle cx="15" cy="-13" r="1.5" fill="#ffd978"/>
+  </g>
+</svg>

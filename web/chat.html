@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <title>Birol Hotel — Booking Assistant</title>
+  <link rel="stylesheet" href="styles/chat.css">
+</head>
+<body>
+  <main class="chat-shell">
+    <header class="chat-header">
+      <a href="index.html" class="home-link" title="Back to home" aria-label="Back to home">‹</a>
+      <div class="logo"><span class="logo-mark">B</span></div>
+      <div class="header-text">
+        <h1>Birol Hotel</h1>
+        <p class="tagline">Booking assistant · Aria</p>
+      </div>
+      <button id="resetBtn" class="reset-btn" title="Start over">Restart</button>
+    </header>
+
+    <section id="messages" class="messages" aria-live="polite"></section>
+
+    <section id="calendarSlot"
+             class="calendar-slot"
+             aria-hidden="true"
+             aria-label="Select check-in and check-out"></section>
+
+    <form id="chatForm" class="composer" autocomplete="off">
+      <input id="input" name="message" type="text"
+             placeholder="Type your message… (try &ldquo;book a room&rdquo;)"
+             autofocus required>
+      <button type="submit" aria-label="Send">Send</button>
+    </form>
+
+    <footer class="chat-footer">
+      <small>Prototype · IU Project: AI Use Case (CSEMAIPAIUC01)</small>
+    </footer>
+  </main>
+
+  <script src="js/bot.js"></script>
+  <script src="js/chat.js"></script>
+</body>
+</html>

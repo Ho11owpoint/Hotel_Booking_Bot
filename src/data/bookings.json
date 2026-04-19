@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Egemen Birol",
+    "checkin": "2026-04-19",
+    "checkout": "2026-04-22",
+    "guests": 4,
+    "breakfast": true,
+    "payment": "Credit card",
+    "booking_id": "AGH-2FC46540",
+    "status": "confirmed"
+  },
+  {
+    "name": "Egemen Birol",
+    "checkin": "2026-04-19",
+    "checkout": "2026-04-23",
+    "guests": 3,
+    "breakfast": true,
+    "payment": "Credit card",
+    "booking_id": "AGH-F4839A9B",
+    "status": "confirmed"
+  }
+]

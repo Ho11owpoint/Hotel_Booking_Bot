@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Birol Hotel — Welcome</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
+</head>
+<body>
+  <div class="aurora" aria-hidden="true">
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+    <span class="blob b3"></span>
+    <span class="blob b4"></span>
+  </div>
+
+  <main class="landing">
+
+    <!-- Top branding -->
+    <header class="landing-header">
+      <span class="monogram">B</span>
+      <span class="wordmark">Birol&nbsp;Hotel</span>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <p class="eyebrow">EST. 1958 · ISTANBUL</p>
+      <h1 class="hero-title">Welcome to the <em>Birol Hotel</em></h1>
+      <p class="hero-sub">
+        A timeless stay on the Bosphorus. Reserve your room in under a minute
+        with our conversational concierge.
+      </p>
+    </section>
+
+    <!-- Call-to-action: label ABOVE a circular button -->
+    <section class="cta" aria-label="Booking">
+      <p class="cta-label">Click to book a room with AI</p>
+      <a href="{{ url_for('chat_page') }}"
+         class="cta-button"
+         aria-label="Open the booking assistant">
+        <span class="spec" aria-hidden="true"></span>
+        <svg viewBox="0 0 24 24" width="46" height="46" aria-hidden="true">
+          <path fill="currentColor"
+                d="M12 3a9 9 0 0 0-7.95 13.28L3 21l4.85-1.04A9 9 0 1 0 12 3Zm0 16.2a7.2 7.2 0 0 1-3.67-1l-.26-.16-2.88.62.62-2.8-.17-.27A7.2 7.2 0 1 1 12 19.2Zm3.5-5.4a5.7 5.7 0 0 1-1.7.26 5.74 5.74 0 0 1-3.95-1.57.68.68 0 0 1-.15-.82.74.74 0 0 1 .9-.3l.62.22a.43.43 0 0 0 .46-.1l.53-.5a.42.42 0 0 1 .57-.02l1.1.92a.42.42 0 0 1 .12.47l-.22.57a.43.43 0 0 0 .12.47c.17.16.4.34.65.48.23.13.46.2.62.24a.43.43 0 0 0 .46-.14l.41-.48a.42.42 0 0 1 .57-.08l1.15.76a.42.42 0 0 1 .17.46l-.15.55a.73.73 0 0 1-.67.53 5.7 5.7 0 0 1-1.65.05Z"/>
+        </svg>
+      </a>
+      <p class="cta-hint">Opens the booking assistant · Aria</p>
+    </section>
+
+    <!-- Three-feature strip -->
+    <section class="features">
+      <div class="feature">
+        <span class="feature-ico">★</span>
+        <h3>Bosphorus views</h3>
+        <p>Every suite overlooks the strait.</p>
+      </div>
+      <div class="feature">
+        <span class="feature-ico">☕</span>
+        <h3>Breakfast included<br><small>— if you ask</small></h3>
+        <p>Freshly prepared Turkish breakfast, optional on any rate.</p>
+      </div>
+      <div class="feature">
+        <span class="feature-ico">◷</span>
+        <h3>24/7 concierge</h3>
+        <p>Our AI assistant answers anytime.</p>
+      </div>
+    </section>
+
+    <footer class="landing-footer">
+      <small>Birol Hotel · Istanbul · +90 (0) 212 000&nbsp;0000 · booking@birolhotel.example</small>
+      <small class="course-tag">
+        Prototype — IU Project: AI Use Case (CSEMAIPAIUC01)
+      </small>
+    </footer>
+
+  </main>
+</body>
+</html>
