@@ -12,12 +12,10 @@ import Foundation
 
 enum AppConfig {
 
-    /// URL of the hosted landing page.
-    /// Replace `<your-github-username>` and `<your-repo>` with your fork.
-    /// Example after enabling GitHub Pages (see ios/README.md):
-    ///   https://egemenbirol.github.io/Hotel_Booking_Bot/
+    /// URL of the hosted landing page (GitHub Pages).
+    /// This is auto-deployed from the /web folder on every push to main.
     static let landingURL = URL(
-        string: "https://YOUR-USERNAME.github.io/Hotel_Booking_Bot/"
+        string: "https://ho11owpoint.github.io/Hotel_Booking_Bot/"
     )!
 
     /// Bust the HTTP cache on every app launch so newly-pushed
