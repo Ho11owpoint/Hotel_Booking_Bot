@@ -1,31 +1,35 @@
 /* ===========================================================
-   Birol Hotel — Landing (static / GitHub Pages)
-   Theme: Deep twilight navy + prism rings + hotel hero view
+   Birol Hotel — Landing
+   Theme: Liquid glass — frosted layered translucency
    =========================================================== */
 
 :root {
-  --bg-top:    #0c0f23;     /* deep plum-navy, not pure black */
+  /* Environment */
+  --bg-top:    #0c0f23;
   --bg-mid:    #0a0d1c;
   --bg-bot:    #05070f;
-  --bg-elev:   #11142a;
-
   --ink:       #ffffff;
-  --ink-soft:  #cdd0df;
+  --ink-soft:  #d6d9e6;
   --muted:     #8087a0;
 
-  --border:    rgba(255, 255, 255, 0.10);
-  --border-2:  rgba(255, 255, 255, 0.22);
+  /* Liquid glass palette */
+  --glass:         rgba(255, 255, 255, 0.06);
+  --glass-2:       rgba(255, 255, 255, 0.10);
+  --glass-tint:    rgba(170, 195, 255, 0.04);  /* cool ambient tint */
+  --glass-border:  rgba(255, 255, 255, 0.14);
+  --glass-rim:     rgba(255, 255, 255, 0.28);
+  --glass-hi:      rgba(255, 255, 255, 0.55);  /* specular highlight */
+  --glass-lo:      rgba(0, 0, 0, 0.40);
+  --glass-bloom:   rgba(180, 200, 255, 0.18);
 
-  /* Rainbow chromatic ring used on every circular accent */
-  --prism: conic-gradient(from 200deg,
-    #ff2e9a 0%,
-    #ff7a2e 11%,
-    #ffe24a 22%,
-    #7bff6b 36%,
-    #2ee5ff 52%,
-    #3d7bff 66%,
-    #a855ff 80%,
-    #ff2e9a 100%);
+  --glass-blur:    24px;
+
+  /* Reusable layered shadow for glass surfaces */
+  --glass-shadow:
+    inset 0 1px 0 var(--glass-rim),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.03),
+    0 10px 30px -6px rgba(0, 0, 0, 0.55),
+    0 2px 6px rgba(0, 0, 0, 0.25);
 
   --font:  "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   --serif: "Playfair Display", "Georgia", "Times New Roman", serif;
@@ -37,7 +41,6 @@ html, body { height: 100%; }
 body {
   font-family: var(--font);
   color: var(--ink);
-  /* A twilight gradient — not pure black */
   background:
     radial-gradient(1200px 900px at 50% -10%, #1b1450 0%, transparent 55%),
     radial-gradient(900px 700px at 50% 115%, #112040 0%, transparent 60%),
@@ -47,12 +50,11 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Respect iPhone 14 Pro safe areas */
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* Gentle fade-in on page load */
+/* Gentle fade-in on load */
 .landing { animation: fadein 0.55s ease-out; }
 @keyframes fadein {
   from { opacity: 0; transform: translateY(6px); }
@@ -65,19 +67,19 @@ body::before {
   position: fixed; inset: 0;
   pointer-events: none; z-index: 0;
   background-image:
-    radial-gradient(1px 1px at 12% 22%, rgba(255,255,255,0.45) 50%, transparent 100%),
-    radial-gradient(1px 1px at 82% 12%, rgba(255,255,255,0.35) 50%, transparent 100%),
-    radial-gradient(1px 1px at 48% 78%, rgba(255,255,255,0.4)  50%, transparent 100%),
-    radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.3)  50%, transparent 100%),
-    radial-gradient(1px 1px at 72% 45%, rgba(255,255,255,0.35) 50%, transparent 100%),
-    radial-gradient(1px 1px at 92% 80%, rgba(255,255,255,0.3)  50%, transparent 100%);
+    radial-gradient(1px 1px at 12% 22%, rgba(255,255,255,0.40) 50%, transparent 100%),
+    radial-gradient(1px 1px at 82% 12%, rgba(255,255,255,0.30) 50%, transparent 100%),
+    radial-gradient(1px 1px at 48% 78%, rgba(255,255,255,0.35) 50%, transparent 100%),
+    radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.25) 50%, transparent 100%),
+    radial-gradient(1px 1px at 72% 45%, rgba(255,255,255,0.30) 50%, transparent 100%),
+    radial-gradient(1px 1px at 92% 80%, rgba(255,255,255,0.25) 50%, transparent 100%);
 }
 
 /* Shell */
 .landing {
   position: relative;
   z-index: 1;
-  max-width: 460px;   /* optimised for iPhone 14 Pro (393 pt wide) */
+  max-width: 460px;
   margin: 0 auto;
   padding: 1.25rem 1rem 1.5rem;
   min-height: 100vh;
@@ -92,47 +94,51 @@ body::before {
   gap: 0.75rem;
   padding-bottom: 1rem;
 }
+
+/* Glass monogram */
 .monogram {
   position: relative;
-  width: 36px; height: 36px;
+  width: 38px; height: 38px;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  background: #0a0b18;
   color: #fff;
   font-family: var(--serif);
   font-weight: 700;
   font-size: 1rem;
-  box-shadow:
-    inset 0 1px 1px rgba(255,255,255,0.1),
-    inset 0 -8px 16px rgba(0,0,0,0.6),
-    0 4px 14px rgba(0,0,0,0.5);
+  background:
+    radial-gradient(circle at 30% 25%,
+      rgba(255, 255, 255, 0.22) 0%,
+      rgba(255, 255, 255, 0.06) 28%,
+      rgba(255, 255, 255, 0) 55%),
+    var(--glass-tint),
+    rgba(20, 24, 44, 0.55);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+  box-shadow: var(--glass-shadow);
+  isolation: isolate;
 }
+/* Top specular crescent */
 .monogram::before {
   content: "";
-  position: absolute; inset: -2px;
+  position: absolute;
+  top: 3px; left: 8px; right: 8px;
+  height: 35%;
   border-radius: 50%;
-  padding: 2px;
-  background: var(--prism);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-  filter: saturate(1.3);
+  background: radial-gradient(ellipse at 50% 0%,
+    var(--glass-hi) 0%,
+    rgba(255, 255, 255, 0) 70%);
+  filter: blur(2px);
+  opacity: 0.7;
+  pointer-events: none;
 }
-.monogram::after {
-  content: "";
-  position: absolute; inset: -6px;
-  border-radius: 50%;
-  background: var(--prism);
-  filter: blur(8px) saturate(1.4);
-  opacity: 0.45;
-  z-index: -1;
-}
+
 .wordmark {
   font-family: var(--serif);
   font-weight: 600;
   font-size: 1.15rem;
   letter-spacing: 0.08em;
-  color: #fff;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 /* ---------- Hotel hero view ---------- */
@@ -140,12 +146,12 @@ body::before {
   position: relative;
   border-radius: 20px;
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 1px solid var(--glass-border);
   box-shadow:
-    0 24px 60px -20px rgba(0,0,0,0.7),
-    inset 0 1px 0 rgba(255,255,255,0.06);
+    0 24px 60px -20px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
   aspect-ratio: 4 / 3;
-  background: #0e1836;  /* warm navy fallback while SVG loads */
+  background: #0e1836;
 }
 .hotel-img {
   display: block;
@@ -177,43 +183,45 @@ body::before {
   font-size: 0.62rem;
   letter-spacing: 0.4em;
   font-weight: 600;
-  background: var(--prism);
-  -webkit-background-clip: text;
-          background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: rgba(255, 255, 255, 0.72);
   margin-bottom: 0.45rem;
 }
 .hero-title {
   font-family: var(--serif);
   font-weight: 700;
-  font-size: clamp(1.6rem, 7vw, 2.1rem);
+  font-size: clamp(1.7rem, 7vw, 2.2rem);
   line-height: 1.1;
   color: #fff;
-  text-shadow: 0 2px 20px rgba(0,0,0,0.55);
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.55);
   letter-spacing: -0.005em;
 }
 .hero-title em {
   font-style: italic;
   position: relative;
+  color: #fff;
 }
+/* Subtle glass underline — no rainbow */
 .hero-title em::after {
   content: "";
   position: absolute;
   left: 5%; right: 5%;
   bottom: 0.07em;
-  height: 2px;
-  border-radius: 2px;
-  background: var(--prism);
-  filter: blur(0.5px) saturate(1.3);
+  height: 1.5px;
+  border-radius: 1px;
+  background: linear-gradient(90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    rgba(255, 255, 255, 0) 100%);
+  filter: blur(0.4px);
 }
 .hero-sub {
   margin-top: 0.45rem;
-  color: #c8cbde;
+  color: rgba(255, 255, 255, 0.78);
   font-size: 0.9rem;
-  text-shadow: 0 1px 6px rgba(0,0,0,0.45);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.45);
 }
 
-/* ---------- CTA ---------- */
+/* ---------- CTA — the liquid glass orb ---------- */
 .cta {
   flex: 1;
   display: flex;
@@ -227,79 +235,100 @@ body::before {
   font-family: var(--serif);
   font-style: italic;
   font-size: 1.2rem;
-  color: #fff;
-  margin-bottom: 1.2rem;
+  color: rgba(255, 255, 255, 0.95);
+  margin-bottom: 1.4rem;
   max-width: 22rem;
+  letter-spacing: 0.005em;
 }
+
+/* The orb */
 .cta-button {
   position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 148px; height: 148px;
   border-radius: 50%;
   text-decoration: none;
-  background:
-    radial-gradient(circle at 35% 30%,
-      rgba(255,255,255,0.14) 0%,
-      rgba(255,255,255,0.04) 25%,
-      rgba(0,0,0,0.9) 70%),
-    #0a0b18;
   color: #fff;
+  /* Layered glass fill — light source top-left, depth bottom-right */
+  background:
+    radial-gradient(circle at 32% 28%,
+      rgba(255, 255, 255, 0.30) 0%,
+      rgba(255, 255, 255, 0.10) 22%,
+      rgba(255, 255, 255, 0) 55%),
+    radial-gradient(circle at 72% 80%,
+      rgba(0, 0, 0, 0.45) 0%,
+      rgba(0, 0, 0, 0) 60%),
+    var(--glass-tint),
+    rgba(22, 26, 48, 0.55);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
   box-shadow:
-    inset 0 1px 1px rgba(255,255,255,0.12),
-    inset 0 -30px 60px rgba(0,0,0,0.85),
-    0 10px 30px rgba(0,0,0,0.6);
-  transition: transform 0.35s ease;
-  z-index: 2;
-  isolation: isolate;
+    inset 0 1px 0 var(--glass-rim),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.35),
+    0 18px 50px -10px rgba(0, 0, 0, 0.6),
+    0 0 60px var(--glass-bloom);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
-.cta-button svg {
-  position: relative;
-  z-index: 3;
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
-}
+
+/* Bright top specular crescent */
 .cta-button::before {
   content: "";
   position: absolute;
-  inset: 0;
+  top: 5%;
+  left: 15%; right: 15%;
+  height: 30%;
   border-radius: 50%;
-  padding: 2px;
-  background: var(--prism);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-  filter: saturate(1.35);
-  z-index: 1;
+  background: radial-gradient(ellipse at 50% 0%,
+    var(--glass-hi) 0%,
+    rgba(255, 255, 255, 0.15) 40%,
+    rgba(255, 255, 255, 0) 75%);
+  filter: blur(2px);
+  pointer-events: none;
+  opacity: 0.95;
 }
+/* Faint outer ambient glow */
 .cta-button::after {
   content: "";
   position: absolute;
-  inset: -14px;
+  inset: -18px;
   border-radius: 50%;
-  background: var(--prism);
-  filter: blur(16px) saturate(1.4);
-  opacity: 0.45;
+  background: radial-gradient(circle,
+    var(--glass-bloom) 0%,
+    rgba(180, 200, 255, 0) 65%);
+  filter: blur(8px);
+  opacity: 0.7;
   z-index: -1;
-  transition: opacity 0.3s ease, inset 0.3s ease, filter 0.3s ease;
+  transition: inset 0.35s ease, opacity 0.35s ease;
 }
-.cta-button > .spec {
-  position: absolute;
-  top: -6px; left: 50%;
-  transform: translateX(-50%);
-  width: 80px; height: 20px;
-  background: radial-gradient(closest-side,
-    rgba(255,255,255,0.9), rgba(255,255,255,0) 70%);
-  filter: blur(3px);
-  z-index: 4;
-  pointer-events: none;
-  opacity: 0.9;
+.cta-button svg {
+  position: relative; z-index: 1;
+  opacity: 0.95;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
 }
+/* Kill the old '.spec' span if it's still in the markup */
+.cta-button .spec { display: none; }
+
 .cta-button:hover {
-  transform: translateY(-2px) scale(1.03);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow:
+    inset 0 1px 0 var(--glass-rim),
+    inset 0 -2px 6px rgba(0, 0, 0, 0.35),
+    0 24px 60px -12px rgba(0, 0, 0, 0.7),
+    0 0 90px var(--glass-bloom);
+}
+.cta-button:hover::after {
+  inset: -26px;
+  opacity: 1;
 }
 .cta-button:active { transform: translateY(0) scale(0.99); }
-.cta-button:focus-visible { outline: 2px solid #fff; outline-offset: 8px; }
+.cta-button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 8px;
+}
 
 .cta-hint {
   margin-top: 1.2rem;
@@ -318,51 +347,75 @@ body::before {
 .feature {
   position: relative;
   background:
-    linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
-  border: 1px solid var(--border);
-  border-radius: 14px;
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%),
+    var(--glass-tint);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
   padding: 0.9rem 1rem;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(160%);
   display: flex;
   align-items: center;
   gap: 0.9rem;
-  transition: border-color 0.25s ease, transform 0.2s ease;
+  transition: background 0.25s ease, transform 0.2s ease, border-color 0.25s ease;
+  box-shadow: var(--glass-shadow);
 }
-.feature:hover { border-color: var(--border-2); transform: translateY(-1px); }
+.feature:hover {
+  border-color: rgba(255, 255, 255, 0.24);
+  transform: translateY(-1px);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.03) 100%),
+    var(--glass-tint);
+}
+
+/* Glass icon pill */
 .feature-ico {
+  position: relative;
   display: inline-flex;
   align-items: center; justify-content: center;
-  width: 36px; height: 36px;
-  flex: 0 0 36px;
+  width: 38px; height: 38px;
+  flex: 0 0 38px;
   border-radius: 50%;
-  background: #0a0b18;
   color: #fff;
   font-size: 1rem;
-  position: relative;
+  background:
+    radial-gradient(circle at 30% 25%,
+      rgba(255, 255, 255, 0.22) 0%,
+      rgba(255, 255, 255, 0.05) 30%,
+      rgba(255, 255, 255, 0) 60%),
+    var(--glass-tint),
+    rgba(22, 26, 48, 0.55);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  isolation: isolate;
 }
 .feature-ico::before {
   content: "";
-  position: absolute; inset: -1.5px;
+  position: absolute;
+  top: 3px; left: 8px; right: 8px;
+  height: 35%;
   border-radius: 50%;
-  padding: 1.5px;
-  background: var(--prism);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
-  opacity: 0.85;
+  background: radial-gradient(ellipse at 50% 0%,
+    var(--glass-hi) 0%, rgba(255, 255, 255, 0) 70%);
+  filter: blur(2px);
+  opacity: 0.6;
+  pointer-events: none;
 }
+
 .feature-text h3 {
   font-family: var(--serif);
   font-weight: 600;
   font-size: 0.98rem;
   color: #fff;
   margin-bottom: 0.1rem;
+  letter-spacing: 0.005em;
 }
 .feature-text h3 small {
   font-family: var(--font);
   font-size: 0.7rem;
   color: var(--muted);
   font-weight: 400;
+  letter-spacing: 0.02em;
 }
 .feature-text p {
   color: var(--ink-soft);
@@ -371,7 +424,7 @@ body::before {
 
 /* ---------- Footer ---------- */
 .landing-footer {
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--glass-border);
   padding-top: 0.8rem;
   display: flex;
   flex-direction: column;
@@ -381,9 +434,9 @@ body::before {
   font-size: 0.72rem;
   text-align: center;
 }
-.course-tag { color: #9aa0b0; font-style: italic; }
+.course-tag { color: rgba(255, 255, 255, 0.55); font-style: italic; }
 
-/* iPhone 14 Pro / small-screen polish */
+/* iPhone 14 Pro polish */
 @media (max-width: 430px) {
   .landing { padding: 0.75rem 0.9rem 1rem; }
   .cta-button { width: 132px; height: 132px; }

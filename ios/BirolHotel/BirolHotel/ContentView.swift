@@ -62,33 +62,57 @@ private struct SplashView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            // Chromatic rim ring
+            // Liquid-glass orb — soft radial fill + top specular highlight
             ZStack {
+                // Ambient bloom behind the orb
                 Circle()
-                    .fill(AngularGradient(
-                        colors: [
-                            .pink, .orange, .yellow, .green,
-                            .cyan, .blue, .purple, .pink
-                        ],
-                        center: .center))
-                    .frame(width: 98, height: 98)
-                    .blur(radius: 14)
-                    .opacity(0.6)
+                    .fill(Color(red: 0.70, green: 0.78, blue: 1.0))
+                    .frame(width: 120, height: 120)
+                    .blur(radius: 18)
+                    .opacity(0.18)
+
+                // The orb itself — dark tinted glass
                 Circle()
-                    .strokeBorder(AngularGradient(
-                        colors: [
-                            .pink, .orange, .yellow, .green,
-                            .cyan, .blue, .purple, .pink
-                        ],
-                        center: .center),
-                        lineWidth: 2)
+                    .fill(
+                        RadialGradient(
+                            gradient: Gradient(stops: [
+                                .init(color: .white.opacity(0.22), location: 0.0),
+                                .init(color: .white.opacity(0.06), location: 0.25),
+                                .init(color: .clear,               location: 0.55),
+                            ]),
+                            center: UnitPoint(x: 0.32, y: 0.28),
+                            startRadius: 0,
+                            endRadius: 60
+                        )
+                    )
+                    .background(
+                        Circle().fill(Color(red: 0.086, green: 0.102, blue: 0.188))
+                    )
                     .frame(width: 88, height: 88)
+                    .overlay(
+                        Circle().strokeBorder(Color.white.opacity(0.22), lineWidth: 1)
+                    )
+                    .shadow(color: .black.opacity(0.5), radius: 14, x: 0, y: 6)
+
+                // Top specular crescent
+                Ellipse()
+                    .fill(
+                        LinearGradient(
+                            colors: [.white.opacity(0.55), .clear],
+                            startPoint: .top, endPoint: .bottom
+                        )
+                    )
+                    .frame(width: 60, height: 18)
+                    .offset(y: -30)
+                    .blur(radius: 2)
+                    .opacity(0.85)
+
                 Text("B")
-                    .font(.custom("Georgia-Bold", size: 32))
+                    .font(.custom("Georgia-Bold", size: 30))
                     .foregroundColor(.white)
             }
-            .scaleEffect(pulse ? 1.04 : 0.98)
-            .animation(.easeInOut(duration: 1.4).repeatForever(autoreverses: true),
+            .scaleEffect(pulse ? 1.035 : 0.985)
+            .animation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true),
                        value: pulse)
 
             Text("Birol Hotel")
@@ -128,17 +152,20 @@ private struct OfflineView: View {
                     .foregroundColor(.white)
                     .padding(.horizontal, 22).padding(.vertical, 10)
                     .background(
-                        Capsule()
-                            .strokeBorder(
-                                AngularGradient(
-                                    colors: [
-                                        .pink, .orange, .yellow, .green,
-                                        .cyan, .blue, .purple, .pink
-                                    ],
-                                    center: .center),
-                                lineWidth: 1.5)
+                        // Liquid glass pill — bright rim, soft inner fill
+                        Capsule().strokeBorder(Color.white.opacity(0.36),
+                                               lineWidth: 1)
                     )
-                    .background(Capsule().fill(Color.white.opacity(0.04)))
+                    .background(
+                        Capsule().fill(
+                            LinearGradient(
+                                colors: [.white.opacity(0.18),
+                                         .white.opacity(0.04)],
+                                startPoint: .top, endPoint: .bottom
+                            )
+                        )
+                    )
+                    .shadow(color: .black.opacity(0.4), radius: 6, y: 3)
             }
             .padding(.top, 6)
         }
