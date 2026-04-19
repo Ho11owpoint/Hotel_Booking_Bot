@@ -380,6 +380,17 @@ const YES_WORDS = ["yes","yeah","yep","yup","sure","ok","okay","correct",
 const NO_WORDS  = ["no","nope","nah","cancel","stop","restart","start over",
                    "wrong","incorrect","negative"];
 
+/** Intents that can be answered at any time, regardless of dialog slot. */
+const CONCIERGE_INTENTS = new Set([
+  "places_to_visit", "food_recommendations", "transport_airport",
+  "check_in_time", "breakfast_hours", "wifi", "parking",
+  "amenities", "cancellation_policy", "pets", "currency_info",
+  "tipping", "language", "hotel_contact", "neighborhood", "emergency",
+]);
+
+/** Minimum confidence needed to actually respond as this intent. */
+const CONCIERGE_CONFIDENCE = 0.4;
+
 function isAffirmative(msg, intent) {
   if (intent === "confirm_yes") return true;
   const low = msg.toLowerCase().trim().replace(/[.,!?]+$/, "");
@@ -401,15 +412,25 @@ class HotelBookingBot {
   // to the 'greet' state. Keeps the UI guided and premium-feeling.
   greetActions() {
     return [
-      { label: "Book a room",                         send: "book a room" },
-      { label: "Information about room availability", send: "show availability" },
+      { label: "Book a room",            send: "book a room" },
+      { label: "Room availability",      send: "show availability" },
+      { label: "Places to visit",        send: "best places to visit" },
+      { label: "Help",                   send: "help" },
+    ];
+  }
+
+  /** Smaller chip set offered alongside the fallback reply. */
+  fallbackActions() {
+    return [
+      { label: "Help",          send: "help" },
+      { label: "Book a room",   send: "book a room" },
     ];
   }
 
   greet() {
     return {
       reply:
-        `Hello! Welcome to ${HOTEL_NAME}. I'm Aria, your booking concierge. ` +
+        `Hello! Welcome to ${HOTEL_NAME}. I'm Aria, your concierge — I can book your stay and answer questions about the hotel and Istanbul. ` +
         "How may I help you today?",
       actions: this.greetActions(),
     };
@@ -424,9 +445,9 @@ class HotelBookingBot {
     message = (message || "").trim();
     if (!message) return { reply: "I didn't catch that — could you say it again?" };
 
-    const { tag: intent } = this.classifier.classify(message);
+    const { tag: intent, score } = this.classifier.classify(message);
 
-    // --- Transversal intents ---
+    // --- Universally-handled intents (any slot) ---
     if (intent === "goodbye") {
       this.session.reset();
       return {
@@ -441,7 +462,24 @@ class HotelBookingBot {
       return { reply: this.classifier.response("thanks") };
     }
 
-    // --- Availability summary (only useful outside an active booking) ---
+    // --- Concierge Q&A (transversal) ---
+    // Answers the question regardless of dialog state. If we're mid-
+    // booking, the reply is followed by a nudge back to the slot we
+    // were on so the user doesn't lose their place.
+    if (CONCIERGE_INTENTS.has(intent) && score >= CONCIERGE_CONFIDENCE) {
+      const answer = this.classifier.response(intent);
+      const slot   = this.session.currentSlot;
+      const inBooking = slot !== "greet" && slot !== "confirm";
+      if (inBooking) {
+        const resume = this._currentSlotPrompt();
+        return {
+          reply: `${answer}\n\n— *back to your booking* —\n${resume}`,
+        };
+      }
+      return { reply: answer, actions: this.greetActions() };
+    }
+
+    // --- Availability summary (only outside a booking) ---
     if (intent === "availability_info" && this.session.currentSlot === "greet") {
       return { reply: availabilityReport(), actions: this.greetActions() };
     }
@@ -492,7 +530,11 @@ We look forward to welcoming you to ${HOTEL_NAME} on ${ci}. ` +
       if (this.tryFillSlotFromMessage(message)) {
         return { reply: this.promptForNextSlot() };
       }
-      return this.greet();
+      // Nothing matched — user said something off-topic.
+      return {
+        reply: this.classifier.response("fallback"),
+        actions: this.fallbackActions(),
+      };
     }
 
     // --- Inside the booking: try to extract ---
@@ -501,6 +543,7 @@ We look forward to welcoming you to ${HOTEL_NAME} on ${ci}. ` +
       return { reply: this.promptForNextSlot() };
     }
 
+    // Mid-booking fallback — keep nudging, don't go off-topic.
     this.session.fallbackCount++;
     if (this.session.fallbackCount >= 3) {
       this.session.reset();
@@ -510,6 +553,20 @@ We look forward to welcoming you to ${HOTEL_NAME} on ${ci}. ` +
       };
     }
     return { reply: this.fallbackHint() };
+  }
+
+  /** Re-emit the prompt for whichever slot we're currently on. */
+  _currentSlotPrompt() {
+    const b = this.session.booking;
+    switch (this.session.currentSlot) {
+      case "name":      return "May I have your **full name**, please?";
+      case "dates":     return "Please share your **check-in and check-out dates** (e.g. *2026-05-10 to 2026-05-14*).";
+      case "guests":    return "**How many guests** will be staying?";
+      case "breakfast": return "Would you like to **include breakfast**? (yes / no)";
+      case "payment":   return "How would you like to pay: **credit card**, **debit card**, or **pay at the hotel**?";
+      case "confirm":   return b.summary();
+      default:          return "How may I help you?";
+    }
   }
 
   tryFillSlotFromMessage(message) {

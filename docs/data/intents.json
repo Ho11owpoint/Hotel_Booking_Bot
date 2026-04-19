@@ -144,18 +144,205 @@
       "tag": "help",
       "patterns": [
         "help", "what can you do", "how does this work", "instructions",
-        "what do you do", "options", "menu"
+        "what do you do", "options", "menu", "capabilities", "topics",
+        "what can you answer", "what can you help with"
       ],
       "responses": [
-        "I can help you book a room at Birol Hotel. I'll ask for your name, dates, number of guests, breakfast preference, and payment method. Just say 'book a room' to begin."
+        "**I'm Aria — your Birol Hotel concierge.** Here's what I can help with:\n\n**Booking**\n• Book a room *(say \"book a room\")*\n• Room availability for upcoming months\n• See your existing bookings\n\n**The hotel**\n• Check-in & check-out times\n• Breakfast hours\n• Wi-Fi, parking, pet policy\n• Amenities (spa, pool, gym)\n• Cancellation policy · contact\n\n**Istanbul**\n• Top places to visit\n• Restaurant recommendations\n• Getting to/from the airport\n• Currency, language, tipping\n• Neighbourhood & emergencies\n\nAsk in your own words — I'll do my best."
+      ]
+    },
+    {
+      "tag": "places_to_visit",
+      "patterns": [
+        "places to visit", "what to visit", "attractions", "sightseeing",
+        "tourist spots", "best places", "istanbul attractions",
+        "what to see", "things to do", "what are the best places to visit in istanbul",
+        "recommend places", "must see", "tourist places", "sights",
+        "landmarks", "historical sites", "where should I go",
+        "what are the best places to visit"
+      ],
+      "responses": [
+        "**Top places to visit in Istanbul:**\n\n**Old City · Sultanahmet**\n• **Hagia Sophia** — 6th-century cathedral turned mosque\n• **Blue Mosque** — the iconic six-minaret mosque\n• **Topkapı Palace** — Ottoman sultans' residence\n• **Basilica Cistern** — underground Byzantine water cistern\n• **Grand Bazaar** — 4,000 shops under one roof\n\n**Galata · Beyoğlu**\n• **Galata Tower** — 360° views of the city\n• **İstiklal Street** — grand pedestrian shopping avenue\n• **Dolmabahçe Palace** — 19th-century imperial palace\n\n**On the water**\n• **Bosphorus cruise** — Europe and Asia in one afternoon\n• **Prince's Islands** — ferry to car-free islands and pine forests\n\nI can book a private guide or cruise through concierge — just ask."
+      ]
+    },
+    {
+      "tag": "food_recommendations",
+      "patterns": [
+        "where to eat", "food recommendations", "best restaurants", "dining",
+        "restaurants", "where should I eat", "good food", "restaurant",
+        "hungry", "lunch", "dinner", "meal", "cuisine", "food",
+        "turkish food", "local food", "where can i find food",
+        "recommend restaurants", "eat", "eating", "dine", "best food",
+        "good restaurant", "places to eat"
+      ],
+      "responses": [
+        "**Dining in Istanbul:**\n\n**Fine dining**\n• **Mikla** — modern Turkish with a Bosphorus skyline\n• **Neolokal** — foraged Anatolian tasting menu\n• **Aheste** — contemporary mezes in Karaköy\n\n**Classic Turkish**\n• **Çiya Sofrası** (Kadıköy) — regional cuisine, museum-on-a-plate\n• **Karaköy Lokantası** — breathtaking tiles, classic meze\n• **Pandeli** — inside the Spice Bazaar since 1901\n\n**Street food**\n• **Balık ekmek** under Galata Bridge (fish sandwiches)\n• **Midye dolma** along İstiklal (stuffed mussels)\n• **Lahmacun** at Halil Lahmacun, Kadıköy\n\nAsk the concierge to book a table — same-day reservations are usually possible."
+      ]
+    },
+    {
+      "tag": "transport_airport",
+      "patterns": [
+        "how to get to the airport", "airport", "transfer", "from the airport",
+        "airport transfer", "taxi", "how do i get to the hotel",
+        "from istanbul airport", "from ist", "from saw", "havaist",
+        "shuttle", "airport shuttle", "transfer to airport",
+        "how do i reach the hotel", "ground transport", "pickup",
+        "how to get from airport", "uber", "car service"
+      ],
+      "responses": [
+        "**Getting to/from Istanbul airport:**\n\n• **Private hotel transfer** — we can arrange a car · ~€45 from IST or €35 from SAW. Ask at reception.\n• **HAVAIST bus** — frequent service · ~₺220 from IST to Taksim (15 min walk to us)\n• **Metro + walk** — M11 from IST to Gayrettepe, then M2 to Şişhane, ~10 min walk. Cheapest option.\n• **Taxi** — roughly ₺700–900 from IST, ₺450–600 from SAW. Use the airport's official counter.\n\nShare your arrival details and I'll pre-arrange a pickup."
+      ]
+    },
+    {
+      "tag": "check_in_time",
+      "patterns": [
+        "check in time", "check-in time", "when can i check in", "check in",
+        "check out time", "check-out time", "when is checkout",
+        "early check in", "late check out", "arrival time", "departure time",
+        "what time check in", "what time check out"
+      ],
+      "responses": [
+        "**Check-in & check-out:**\n\n• **Check-in:** from **2:00 PM**\n• **Check-out:** until **12:00 noon**\n\n**Flexibility**\n• *Early check-in* subject to availability — often possible if you arrive before noon; we'll do our best.\n• *Late check-out* until 3 PM is usually complimentary on request; later may carry a half-day charge.\n\nLuggage storage is free before and after your stay."
+      ]
+    },
+    {
+      "tag": "breakfast_hours",
+      "patterns": [
+        "breakfast time", "breakfast hours", "when is breakfast",
+        "breakfast schedule", "what time is breakfast", "breakfast served",
+        "when does breakfast start", "breakfast open", "breakfast until"
+      ],
+      "responses": [
+        "**Breakfast** is served **07:00–10:30** daily in the ground-floor restaurant (08:00–11:00 on weekends).\n\nExpect a full Turkish spread — cheeses, olives, honeycomb, menemen, fresh börek, seasonal fruit, and of course strong Turkish tea. Continental options and a daily chef's special round it out.\n\nRoom service breakfast is available 06:30–11:00 for a small tray charge."
+      ]
+    },
+    {
+      "tag": "wifi",
+      "patterns": [
+        "wifi", "wi-fi", "internet", "wifi password", "wi-fi password",
+        "connect to wifi", "wireless", "internet password", "how to connect",
+        "wifi name", "ssid"
+      ],
+      "responses": [
+        "**Complimentary high-speed Wi-Fi** is available throughout the hotel.\n\n• **Network:** `BirolHotel-Guest`\n• **Password:** given on your key-card sleeve at check-in\n• **Premium tier:** free for our guests — no paywall, no signup.\n\nHaving trouble? Dial 0 from any phone and our tech desk will get you online."
+      ]
+    },
+    {
+      "tag": "parking",
+      "patterns": [
+        "parking", "park", "where do i park", "car park", "garage",
+        "valet", "parking fee", "parking cost", "is there parking",
+        "where can i park", "parking available"
+      ],
+      "responses": [
+        "**Parking** is available at the hotel.\n\n• **Valet** — 24/7 at the main entrance, **₺250 / night**\n• **Self-park** — secure basement garage, **₺180 / night** (limited spaces)\n• **EV charging** — two Type-2 stations, included for valet guests\n\nStreet parking in our neighbourhood is metered and rare — valet is the easiest option."
+      ]
+    },
+    {
+      "tag": "amenities",
+      "patterns": [
+        "amenities", "facilities", "spa", "pool", "gym", "fitness",
+        "what do you have", "hotel amenities", "services", "hotel facilities",
+        "swimming pool", "fitness center", "workout", "sauna",
+        "steam room", "hammam", "bar", "lounge"
+      ],
+      "responses": [
+        "**Birol Hotel amenities:**\n\n• **Hammam & spa** — traditional Turkish bath, three treatment rooms. 10 am–10 pm.\n• **Rooftop pool** — heated year-round, Bosphorus views. 7 am–9 pm.\n• **Fitness center** — 24/7, Technogym equipment, free weights, cardio\n• **Library bar** — signature cocktails, 5 pm–1 am\n• **Restaurant** — breakfast daily · dinner Tue–Sun · closed Monday evenings\n• **24/7 concierge** — reservations, tickets, guides, private transport\n• **Laundry & dry-cleaning** — same-day if collected before 9 am\n\nAnything specific you'd like to book?"
+      ]
+    },
+    {
+      "tag": "cancellation_policy",
+      "patterns": [
+        "cancellation", "cancel booking", "cancellation policy", "refund",
+        "can i cancel", "cancel reservation", "refund policy",
+        "change my booking", "modify booking", "reschedule"
+      ],
+      "responses": [
+        "**Cancellation policy:**\n\n• **Free cancellation** up to **48 hours** before check-in.\n• Within 48 hours: **one night's charge**.\n• No-show: **full stay charged.**\n\n**Changes** (dates, guests, room type) are free of charge up to 24 hours before arrival — subject to availability.\n\nTo cancel or amend, reply with your booking reference (starts with BH-) or call +90 (0) 212 000 0000."
+      ]
+    },
+    {
+      "tag": "pets",
+      "patterns": [
+        "pets", "pet friendly", "can i bring my dog", "dog", "cat",
+        "pet policy", "bring my pet", "pet fee", "pets allowed",
+        "animal", "pet"
+      ],
+      "responses": [
+        "**Yes — we're pet-friendly**, with a little advance notice.\n\n• **Dogs & cats** welcome in standard and deluxe rooms\n• **Weight limit:** up to 15 kg per pet, max 2 pets per room\n• **Fee:** ₺200 / night per pet (includes a cosy bed and bowls)\n• Please mention your pet when booking so we can assign a ground-floor room near the garden.\n\nWe can also arrange dog-walkers and a local vet on request."
+      ]
+    },
+    {
+      "tag": "currency_info",
+      "patterns": [
+        "currency", "money", "lira", "turkish lira", "exchange",
+        "exchange rate", "atm", "cash", "credit card accepted",
+        "which currency", "what currency"
+      ],
+      "responses": [
+        "**Currency in Istanbul:**\n\n• Local currency is the **Turkish Lira (₺ / TRY)**\n• Major credit cards (**Visa, Mastercard, Amex**) are widely accepted\n• Contactless payment is ubiquitous — tap your phone at most places\n• ATMs on every corner — **Garanti, İş Bankası, and Yapı Kredi** are reliable\n• Some smaller cafés, taxis, and markets are cash-only; carry ~₺500 in small notes\n\nWe can exchange USD/EUR at the front desk at competitive rates."
+      ]
+    },
+    {
+      "tag": "tipping",
+      "patterns": [
+        "tipping", "tip", "how much to tip", "gratuity", "service charge",
+        "should i tip", "tip waiter", "tip taxi"
+      ],
+      "responses": [
+        "**Tipping in Istanbul:**\n\n• **Restaurants & cafés** — **10%** is customary; a bit more for great service. Check if service is already included (\"servis dahil\").\n• **Taxis** — round up to the nearest ₺10; no expectation of more.\n• **Hotel staff** — ₺50–100 for the porter, ₺50/day for housekeeping left on the pillow.\n• **Tour guides** — ₺200–400 per day if you're enjoying the tour.\n• **Hammam** — ₺100–200 for the tellak (masseur).\n\nTips in cash are most appreciated."
+      ]
+    },
+    {
+      "tag": "language",
+      "patterns": [
+        "language", "languages", "do you speak english", "english",
+        "which languages", "language spoken", "staff language",
+        "speak english", "german", "french", "arabic"
+      ],
+      "responses": [
+        "**Languages at the Birol Hotel:**\n\n• **Turkish** — our house language\n• **English** — all front-desk, concierge and restaurant staff are fluent\n• **German, French, Arabic** — at least one colleague on each shift\n• **Russian, Spanish** — available with a little notice\n\nOn the street, English works well in tourist areas; a few phrases of Turkish (*merhaba* — hello · *teşekkürler* — thanks) go a very long way."
+      ]
+    },
+    {
+      "tag": "hotel_contact",
+      "patterns": [
+        "contact", "phone number", "phone", "email", "how to reach you",
+        "call the hotel", "hotel contact", "reception number", "address",
+        "where is the hotel", "how to contact", "contact details",
+        "where are you located", "location"
+      ],
+      "responses": [
+        "**Birol Hotel — contact & location:**\n\n• **Address:** Karaköy Mahallesi, near the Galata Tower, Beyoğlu / İstanbul\n• **Phone:** +90 (0) 212 000 0000 (24/7)\n• **Email:** booking@birolhotel.example\n• **Concierge:** concierge@birolhotel.example\n\nWe're a 10-minute walk from Galata Tower, 15 minutes from İstiklal, and 20 minutes by car from the Old City. Nearest metro: **Şişhane (M2)**."
+      ]
+    },
+    {
+      "tag": "neighborhood",
+      "patterns": [
+        "neighborhood", "neighbourhood", "area", "where is the hotel located",
+        "karakoy", "galata", "beyoglu", "around the hotel", "nearby",
+        "what's around", "local area", "surroundings"
+      ],
+      "responses": [
+        "**Around the hotel — Karaköy & Galata:**\n\nWe sit in one of Istanbul's most creative neighbourhoods — cobblestone streets, design shops, third-wave cafés, and a thriving gallery scene.\n\n**On foot from the hotel**\n• **Galata Tower** — 5 min\n• **Karaköy Güllüoğlu** (legendary baklava) — 6 min\n• **Istanbul Modern** (contemporary art museum) — 7 min\n• **Galata Bridge** (great sunset spot) — 8 min\n• **İstiklal Street** — 12 min\n\n**Across the bridge** — Sultanahmet and the Grand Bazaar are 20 min by tram."
+      ]
+    },
+    {
+      "tag": "emergency",
+      "patterns": [
+        "emergency", "ambulance", "police", "fire", "doctor", "hospital",
+        "help urgent", "medical", "first aid", "emergency number",
+        "i need help", "i need a doctor"
+      ],
+      "responses": [
+        "**Emergency numbers in Turkey (all free, 24/7):**\n\n• **112** — Medical emergency / ambulance *(also works for police and fire)*\n• **155** — Police\n• **110** — Fire department\n• **156** — Coast guard\n\n**From the hotel:** dial **0** from any room phone or press the red button on the bedside — a member of staff will be with you within a minute, and we'll coordinate the ambulance and hospital.\n\nEnglish-speaking hospital nearby: **American Hospital (Amerikan Hastanesi)** — +90 212 444 37 77."
       ]
     },
     {
       "tag": "fallback",
       "patterns": [],
       "responses": [
-        "I'm sorry, I didn't quite catch that. Could you rephrase? (You can say 'help' at any time.)",
-        "Hmm, I'm not sure I understood. Could you try that again?"
+        "I'm afraid that's outside what I can help with — I focus on **Birol Hotel** bookings and **Istanbul** travel tips. Tap **Help** to see everything I can answer, or try asking another way."
       ]
     }
   ]
