@@ -139,6 +139,38 @@ body::before {
   font-size: 1.15rem;
   letter-spacing: 0.08em;
   color: rgba(255, 255, 255, 0.92);
+  flex: 1;    /* pushes CEO login to the right */
+}
+
+/* CEO login — top-right glass pill */
+.ceo-login {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border);
+  color: rgba(255, 255, 255, 0.85);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  text-decoration: none;
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 3px 10px -2px rgba(0, 0, 0, 0.4);
+  transition: background 0.2s ease, color 0.2s ease, border 0.2s ease, transform 0.18s ease;
+}
+.ceo-login svg { opacity: 0.85; }
+.ceo-login:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.35);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
+  transform: translateY(-1px);
 }
 
 /* ---------- Hotel hero view ---------- */
