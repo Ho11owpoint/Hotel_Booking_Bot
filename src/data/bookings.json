@@ -18,5 +18,25 @@
     "payment": "Credit card",
     "booking_id": "AGH-F4839A9B",
     "status": "confirmed"
+  },
+  {
+    "name": "Jane Doe",
+    "checkin": "2026-05-10",
+    "checkout": "2026-05-14",
+    "guests": 2,
+    "breakfast": true,
+    "payment": "Credit card",
+    "booking_id": "AGH-75AF1326",
+    "status": "confirmed"
+  },
+  {
+    "name": "Jane Doe",
+    "checkin": "2026-05-10",
+    "checkout": "2026-05-14",
+    "guests": 2,
+    "breakfast": true,
+    "payment": "Credit card",
+    "booking_id": "AGH-C52CFC1F",
+    "status": "confirmed"
   }
 ]

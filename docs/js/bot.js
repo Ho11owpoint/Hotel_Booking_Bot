@@ -259,6 +259,53 @@ function isoDate(d) {
   return `${y}-${m}-${day}`;
 }
 
+/**
+ * Human-readable availability summary for the concierge chip.
+ * Mirrors the peak-block labels from availability.py but generates
+ * text that can be printed as a chat bubble.
+ */
+function availabilityReport() {
+  const fmt = iso => {
+    const [y, m, d] = iso.split("-").map(Number);
+    const monthNames = ["Jan","Feb","Mar","Apr","May","Jun",
+                        "Jul","Aug","Sep","Oct","Nov","Dec"];
+    return `${monthNames[m - 1]} ${d}`;
+  };
+  const peaks = [
+    ["2026-07-10", "2026-07-20", "Istanbul summer peak"],
+    ["2026-08-08", "2026-08-15", "Mid-August peak"],
+    ["2026-12-27", "2027-01-03", "Christmas & New Year"],
+    ["2027-04-22", "2027-04-28", "Spring holiday"],
+  ];
+  const today = new Date();
+  const blocked = unavailableDates();
+
+  const lines = [];
+  lines.push(`**Upcoming availability at ${HOTEL_NAME}**`);
+  lines.push("");
+  lines.push("We're open most days across the next 12 months. Fully booked:");
+  for (const [s, e, label] of peaks) {
+    const start = new Date(s + "T00:00:00");
+    if (start < today) continue;
+    const y = start.getFullYear();
+    const en = new Date(e + "T00:00:00");
+    const range = y === en.getFullYear()
+      ? `${fmt(s)} – ${fmt(e)}, ${y}`
+      : `${fmt(s)} ${y} – ${fmt(e)} ${en.getFullYear()}`;
+    lines.push(`• ${range} — ${label}`);
+  }
+  const weekendsFull = blocked.filter(d => {
+    const dt = new Date(d + "T00:00:00");
+    const inPeak = peaks.some(([s, e]) =>
+      dt >= new Date(s + "T00:00:00") && dt <= new Date(e + "T00:00:00"));
+    return !inPeak && dt.getDay() === 6;
+  }).length;
+  lines.push(`• Plus about ${weekendsFull} peak Saturdays scattered across the year`);
+  lines.push("");
+  lines.push("Pick any other date in the calendar and you're good to go.");
+  return lines.join("\n");
+}
+
 // ----------------------------------------------------------------
 // 4. Booking domain + local store
 // ----------------------------------------------------------------
@@ -350,72 +397,119 @@ class HotelBookingBot {
     this.session = new BookingConversation();
   }
 
-  greet() {
-    return `Hello! Welcome to ${HOTEL_NAME}. I'm Aria, your booking assistant. ` +
-           "I can reserve a room for you — just say **'book a room'** to begin, " +
-           "or type **'help'** for more info.";
+  // Standard quick-reply chips shown after the greeting and any return
+  // to the 'greet' state. Keeps the UI guided and premium-feeling.
+  greetActions() {
+    return [
+      { label: "Book a room",                         send: "book a room" },
+      { label: "Information about room availability", send: "show availability" },
+    ];
   }
 
+  greet() {
+    return {
+      reply:
+        `Hello! Welcome to ${HOTEL_NAME}. I'm Aria, your booking concierge. ` +
+        "How may I help you today?",
+      actions: this.greetActions(),
+    };
+  }
+
+  /**
+   * Produce the bot's next reply.
+   *
+   * @returns {{reply: string, actions?: Array<{label:string, send?:string, href?:string}>}}
+   */
   respond(message) {
     message = (message || "").trim();
-    if (!message) return "I didn't catch that — could you say it again?";
+    if (!message) return { reply: "I didn't catch that — could you say it again?" };
 
     const { tag: intent } = this.classifier.classify(message);
 
     // --- Transversal intents ---
     if (intent === "goodbye") {
       this.session.reset();
-      return `Thank you for choosing ${HOTEL_NAME}. Safe travels!`;
+      return {
+        reply: `Thank you for choosing ${HOTEL_NAME}. Safe travels!`,
+        actions: this.greetActions(),
+      };
     }
-    if (intent === "help")   return this.classifier.response("help");
-    if (intent === "thanks") return this.classifier.response("thanks");
+    if (intent === "help") {
+      return { reply: this.classifier.response("help"), actions: this.greetActions() };
+    }
+    if (intent === "thanks") {
+      return { reply: this.classifier.response("thanks") };
+    }
+
+    // --- Availability summary (only useful outside an active booking) ---
+    if (intent === "availability_info" && this.session.currentSlot === "greet") {
+      return { reply: availabilityReport(), actions: this.greetActions() };
+    }
 
     // --- Confirm slot: keyword-based yes/no, not tag-based ---
     if (this.session.currentSlot === "confirm") {
       if (isAffirmative(message, intent)) {
-        const id = saveBooking(this.session.booking);
-        const ci = this.session.booking.checkin;
+        const snapshot = { ...this.session.booking };
+        const id = saveBooking(snapshot);
+        const ci = snapshot.checkin;
         this.session.reset();
-        return `Your booking is **confirmed**!
+        return {
+          reply:
+            `Your booking is **confirmed**!
 Reference number: **${id}**
 
 We look forward to welcoming you to ${HOTEL_NAME} on ${ci}. ` +
-               "Anything else I can help with?";
+            "Anything else I can help with?",
+          actions: [
+            { label: "See my booking", href: `booking.html?id=${id}` },
+            { label: "Book another",   send: "book a room" },
+          ],
+        };
       }
       if (isNegative(message, intent)) {
         this.session.reset();
-        return "No problem — let's start again. May I have your name, please?";
+        return { reply: "No problem — let's start again. May I have your name, please?" };
       }
       this.session.fallbackCount++;
       if (this.session.fallbackCount >= 3) {
         this.session.reset();
-        return "I'm having trouble understanding. Let's start fresh — please say **'book a room'** when you're ready.";
+        return {
+          reply: "I'm having trouble understanding. Let's start fresh.",
+          actions: this.greetActions(),
+        };
       }
-      return this.fallbackHint();
+      return { reply: this.fallbackHint() };
     }
 
     // --- Greet / first contact ---
     if (this.session.currentSlot === "greet") {
       if (intent === "greet" || intent === "book_room") {
         this.session.currentSlot = "name";
-        return `Lovely — let's book your stay at ${HOTEL_NAME}. May I have your **full name**, please?`;
+        return {
+          reply: `Lovely — let's book your stay at ${HOTEL_NAME}. May I have your **full name**, please?`,
+        };
       }
-      if (this.tryFillSlotFromMessage(message)) return this.promptForNextSlot();
+      if (this.tryFillSlotFromMessage(message)) {
+        return { reply: this.promptForNextSlot() };
+      }
       return this.greet();
     }
 
     // --- Inside the booking: try to extract ---
     if (this.tryFillSlotFromMessage(message)) {
       this.session.fallbackCount = 0;
-      return this.promptForNextSlot();
+      return { reply: this.promptForNextSlot() };
     }
 
     this.session.fallbackCount++;
     if (this.session.fallbackCount >= 3) {
       this.session.reset();
-      return "I'm having trouble understanding. Let's start fresh — please say **'book a room'** when you're ready.";
+      return {
+        reply: "I'm having trouble understanding. Let's start fresh.",
+        actions: this.greetActions(),
+      };
     }
-    return this.fallbackHint();
+    return { reply: this.fallbackHint() };
   }
 
   tryFillSlotFromMessage(message) {
@@ -494,4 +588,9 @@ window.BirolBot = {
   HotelBookingBot,
   unavailableDates,
   HOTEL_NAME,
+  getBookings: () => JSON.parse(localStorage.getItem(STORE_KEY) || "[]"),
+  getBooking: (id) => {
+    const all = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
+    return all.find(b => b.booking_id === id) || null;
+  },
 };

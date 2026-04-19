@@ -128,6 +128,19 @@
       ]
     },
     {
+      "tag": "availability_info",
+      "patterns": [
+        "availability", "room availability", "information about room availability",
+        "information about availability", "show availability", "which dates are available",
+        "when are you full", "when are you booked", "which days are free",
+        "is the hotel full", "can i see availability", "available dates",
+        "occupancy", "are you busy", "how busy are you", "show me availability"
+      ],
+      "responses": [
+        "Here is our upcoming availability at Birol Hotel:"
+      ]
+    },
+    {
       "tag": "help",
       "patterns": [
         "help", "what can you do", "how does this work", "instructions",

@@ -1,0 +1,391 @@
+/* ===========================================================
+   Birol Hotel — Booking details (digital receipt)
+   Theme: Twilight navy + prism rings (same palette as landing)
+   =========================================================== */
+
+:root {
+  --bg-top:    #0c0f23;
+  --bg-mid:    #0a0d1c;
+  --bg-bot:    #05070f;
+
+  --ink:       #ffffff;
+  --ink-soft:  #cdd0df;
+  --muted:     #8087a0;
+
+  --border:    rgba(255, 255, 255, 0.10);
+  --border-2:  rgba(255, 255, 255, 0.22);
+
+  --prism: conic-gradient(from 200deg,
+    #ff2e9a 0%, #ff7a2e 11%, #ffe24a 22%, #7bff6b 36%,
+    #2ee5ff 52%, #3d7bff 66%, #a855ff 80%, #ff2e9a 100%);
+
+  --font:  "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --serif: "Playfair Display", "Georgia", "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; }
+
+body {
+  font-family: var(--font);
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 900px at 50% -10%, #1b1450 0%, transparent 55%),
+    radial-gradient(900px 700px at 50% 115%, #112040 0%, transparent 60%),
+    linear-gradient(180deg, var(--bg-top) 0%, var(--bg-mid) 55%, var(--bg-bot) 100%);
+  line-height: 1.55;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Dust */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  background-image:
+    radial-gradient(1px 1px at 12% 22%, rgba(255,255,255,0.4) 50%, transparent 100%),
+    radial-gradient(1px 1px at 82% 12%, rgba(255,255,255,0.3) 50%, transparent 100%),
+    radial-gradient(1px 1px at 48% 78%, rgba(255,255,255,0.35) 50%, transparent 100%),
+    radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.25) 50%, transparent 100%),
+    radial-gradient(1px 1px at 72% 45%, rgba(255,255,255,0.3) 50%, transparent 100%);
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ---------- Header ---------- */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border-2);
+  color: var(--ink-soft);
+  background: rgba(255,255,255,0.03);
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+.back-link:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.4);
+}
+
+.monogram {
+  position: relative;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: #0a0b18;
+  color: #fff;
+  font-family: var(--serif);
+  font-weight: 700;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,0.1),
+              inset 0 -8px 16px rgba(0,0,0,0.6),
+              0 4px 14px rgba(0,0,0,0.5);
+}
+.monogram::before {
+  content: "";
+  position: absolute; inset: -2px;
+  border-radius: 50%;
+  padding: 2px;
+  background: var(--prism);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+}
+.monogram::after {
+  content: "";
+  position: absolute; inset: -6px;
+  border-radius: 50%;
+  background: var(--prism);
+  filter: blur(8px) saturate(1.4);
+  opacity: 0.45;
+  z-index: -1;
+}
+.page-title h1 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.35rem;
+  letter-spacing: 0.01em;
+}
+.muted { color: var(--muted); font-size: 0.82rem; }
+
+/* ---------- List ---------- */
+.booking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: fadein 0.4s ease;
+}
+@keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
+
+/* ---------- Card ---------- */
+.card {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.015) 100%);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.1rem 1.1rem 0.9rem;
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+.card.focused {
+  border-color: transparent;
+}
+.card.focused::before {
+  content: "";
+  position: absolute; inset: -1px;
+  border-radius: 21px;
+  padding: 1px;
+  background: var(--prism);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  animation: focuspulse 2.4s ease-in-out infinite;
+}
+@keyframes focuspulse {
+  0%, 100% { filter: saturate(1.3) brightness(1); }
+  50%      { filter: saturate(1.6) brightness(1.15); }
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.6rem;
+  font-size: 0.76rem;
+}
+.status {
+  display: inline-flex; align-items: center; gap: 6px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9effc9;
+  font-weight: 600;
+}
+.status .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #4effaa;
+  box-shadow: 0 0 8px rgba(78, 255, 170, 0.7);
+}
+.ref {
+  text-align: right;
+  line-height: 1.15;
+}
+.ref-label {
+  display: block;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.ref-id {
+  font-family: "SF Mono", Menlo, "Roboto Mono", monospace;
+  font-size: 0.9rem;
+  color: #fff;
+  letter-spacing: 0.08em;
+}
+
+.card-hero {
+  padding: 0.3rem 0 0.8rem;
+  border-bottom: 1px dashed rgba(255,255,255,0.12);
+  margin-bottom: 0.8rem;
+  text-align: center;
+}
+.eyebrow {
+  display: inline-block;
+  font-size: 0.62rem;
+  letter-spacing: 0.4em;
+  font-weight: 600;
+  background: var(--prism);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.35rem;
+}
+.card-hero h2 {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-style: italic;
+  font-size: 1.6rem;
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+.stay {
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  margin-bottom: 0.2rem;
+}
+.stay b { color: #fff; font-weight: 500; }
+.stay .arrow {
+  display: inline-block;
+  margin: 0 0.35rem;
+  background: var(--prism);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+.nights {
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Details grid ---------- */
+.details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.65rem 1rem;
+  margin-bottom: 0.9rem;
+}
+.details > div {
+  padding: 0.25rem 0;
+}
+.details dt {
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.2rem;
+}
+.details dd {
+  font-size: 0.88rem;
+  color: #fff;
+  font-weight: 500;
+}
+.details dd.status-cell { text-transform: capitalize; color: #9effc9; }
+
+/* ---------- Card actions ---------- */
+.card-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ---------- Empty state ---------- */
+.empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+.empty-icon {
+  font-size: 2rem;
+  background: var(--prism);
+  -webkit-background-clip: text;
+          background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.6rem;
+}
+.empty h2 {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 1.2rem;
+  margin-bottom: 0.4rem;
+}
+.empty p { color: var(--muted); font-size: 0.9rem; }
+
+/* ---------- Buttons ---------- */
+.btn-primary, .btn-ghost {
+  position: relative;
+  isolation: isolate;
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid var(--border-2);
+  background: rgba(255,255,255,0.04);
+  color: var(--ink-soft);
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.btn-ghost:hover {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+}
+.btn-primary {
+  background: #0a0b18;
+  color: #fff;
+  border-color: transparent;
+  font-weight: 600;
+}
+.btn-primary::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 999px;
+  padding: 1.5px;
+  background: var(--prism);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  filter: saturate(1.3);
+}
+.btn-primary:hover { transform: translateY(-1px); background: #15151f; }
+
+.btn-ghost.copied { color: #9effc9; }
+
+/* ---------- Footer action row ---------- */
+.footer-actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+  padding-top: 0.6rem;
+  flex-wrap: wrap;
+}
+
+/* ---------- Print ---------- */
+@media print {
+  body { background: #fff !important; color: #000 !important; }
+  body::before { display: none; }
+  .page-header .back-link, .footer-actions, .card-actions { display: none; }
+  .card {
+    background: #fff;
+    border: 1px solid #ccc;
+    color: #000;
+    page-break-inside: avoid;
+  }
+  .card *, .card-hero h2, .eyebrow, .stay .arrow { color: #000 !important; -webkit-text-fill-color: #000 !important; }
+  .ref-label, .details dt, .muted { color: #555 !important; }
+  .status { color: #0a6f3c !important; }
+  .status .dot { background: #0a6f3c !important; box-shadow: none; }
+}
+
+@media (max-width: 430px) {
+  .page { padding: 0.9rem; }
+  .card-hero h2 { font-size: 1.4rem; }
+  .details { grid-template-columns: 1fr 1fr; gap: 0.55rem 0.8rem; }
+}

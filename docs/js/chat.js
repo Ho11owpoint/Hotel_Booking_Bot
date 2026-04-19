@@ -27,7 +27,8 @@ async function init() {
     return;
   }
   unavailable = new Set(window.BirolBot.unavailableDates());
-  addMessage("bot", bot.greet());
+  const g = bot.greet();
+  addMessage("bot", g.reply, g.actions);
 }
 init();
 
@@ -43,7 +44,11 @@ function renderMarkdown(text) {
     .replace(/\n/g, "<br>");
 }
 
-function addMessage(role, text) {
+function addMessage(role, text, actions) {
+  // Remove any previous chip row — only the latest bot reply should
+  // carry suggestions, so the UI never gets cluttered.
+  messages.querySelectorAll(".chip-row").forEach(el => el.remove());
+
   const wrap = document.createElement("div");
   wrap.className = `msg ${role}`;
   const bubble = document.createElement("div");
@@ -51,7 +56,32 @@ function addMessage(role, text) {
   bubble.innerHTML = renderMarkdown(text);
   wrap.appendChild(bubble);
   messages.appendChild(wrap);
+
+  if (role === "bot" && Array.isArray(actions) && actions.length) {
+    const row = document.createElement("div");
+    row.className = "chip-row";
+    for (const a of actions) {
+      const chip = document.createElement("button");
+      chip.className = "chip";
+      chip.type = "button";
+      chip.textContent = a.label;
+      chip.addEventListener("click", () => onChipClick(a, row));
+      row.appendChild(chip);
+    }
+    messages.appendChild(row);
+  }
   messages.scrollTop = messages.scrollHeight;
+}
+
+function onChipClick(action, row) {
+  // Freeze the chip row visually so the user sees what they chose.
+  row.classList.add("chosen");
+  row.querySelectorAll(".chip").forEach(b => { b.disabled = true; });
+  if (action.href) {
+    window.location.href = action.href;
+    return;
+  }
+  if (action.send) sendMessage(action.send);
 }
 
 function showTyping() {
@@ -77,9 +107,9 @@ async function sendMessage(text) {
   showTyping();
   await new Promise(r => setTimeout(r, 260));
   try {
-    const reply = bot.respond(text);
+    const { reply, actions } = bot.respond(text);
     hideTyping();
-    addMessage("bot", reply);
+    addMessage("bot", reply, actions);
     if (bot.session.currentSlot === "dates") openCalendar();
     else                                     closeCalendar();
   } catch (err) {
@@ -105,7 +135,8 @@ resetBtn.addEventListener("click", () => {
   if (!bot) return;
   bot.session.reset();
   messages.innerHTML = "";
-  addMessage("bot", bot.greet());
+  const g = bot.greet();
+  addMessage("bot", g.reply, g.actions);
   closeCalendar();
   input.focus();
 });
