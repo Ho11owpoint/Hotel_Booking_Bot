@@ -8,6 +8,41 @@
 const HOTEL_NAME = "Birol Hotel";
 
 // ----------------------------------------------------------------
+// Pricing model — single source of truth
+// ----------------------------------------------------------------
+const ROOM_TYPES = [
+  { id: "standard",        name: "Standard Room",   rate: 120,
+    blurb: "22 m² · courtyard view · queen bed" },
+  { id: "deluxe",          name: "Deluxe Room",     rate: 180,
+    blurb: "32 m² · city view · king bed · marble bath" },
+  { id: "king_suite",      name: "King Suite",      rate: 280,
+    blurb: "48 m² · sitting area · two-person tub" },
+  { id: "bosphorus_suite", name: "Bosphorus Suite", rate: 420,
+    blurb: "65 m² · floor-to-ceiling windows · private terrace" },
+];
+const BREAKFAST_PER_GUEST_PER_NIGHT = 10;  // EUR
+
+/** Match a free-form room mention to one of the catalogue entries. */
+function findRoomType(text) {
+  const low = (text || "").toLowerCase();
+  // Match by id first (chip clicks send the proper name)
+  for (const r of ROOM_TYPES) {
+    if (low === r.name.toLowerCase()) return r;
+    if (low === r.id) return r;
+  }
+  // Then by keyword
+  if (/\bbosphorus\b|\bview\b|\bpenthouse\b|\bpremium suite\b/.test(low))
+    return ROOM_TYPES.find(r => r.id === "bosphorus_suite");
+  if (/\bking\b|\bjunior\b|\bsuite\b/.test(low))
+    return ROOM_TYPES.find(r => r.id === "king_suite");
+  if (/\bdeluxe\b|\bsuperior\b/.test(low))
+    return ROOM_TYPES.find(r => r.id === "deluxe");
+  if (/\bstandard\b|\bclassic\b|\bbasic\b/.test(low))
+    return ROOM_TYPES.find(r => r.id === "standard");
+  return null;
+}
+
+// ----------------------------------------------------------------
 // 1. Intent classifier — bag-of-words + cosine similarity
 // ----------------------------------------------------------------
 const STOPWORDS = new Set([
@@ -317,39 +352,96 @@ class Booking {
     this.name = null;
     this.checkin = null;
     this.checkout = null;
+    this.roomType = null;     // human-readable, e.g. "Deluxe Room"
+    this.roomRate = null;     // EUR per night
     this.guests = null;
     this.breakfast = null;
     this.payment = null;
     this.booking_id = null;
     this.status = "draft";
+    this.total_eur = null;    // populated on save
   }
+
   nights() {
     if (!(this.checkin && this.checkout)) return 0;
-    const a = new Date(this.checkin + "T00:00:00");
+    const a = new Date(this.checkin  + "T00:00:00");
     const b = new Date(this.checkout + "T00:00:00");
     return Math.round((b - a) / 86_400_000);
   }
-  summary() {
-    const bf = this.breakfast ? "included" : "not included";
-    return `**Booking summary**
-- Guest: ${this.name}
-- Check-in: ${this.checkin}
-- Check-out: ${this.checkout}
-- Nights: ${this.nights()}
-- Guests: ${this.guests}
-- Breakfast: ${bf}
-- Payment: ${this.payment}
 
-Shall I confirm this booking? (yes / no)`;
+  roomCost()      { return (this.roomRate || 0) * this.nights(); }
+  breakfastCost() {
+    return this.breakfast
+      ? (this.guests || 0) * this.nights() * BREAKFAST_PER_GUEST_PER_NIGHT
+      : 0;
   }
+  totalCost()     { return this.roomCost() + this.breakfastCost(); }
+
+  summary() {
+    const n = this.nights();
+    const bf = this.breakfast
+      ? `included (+€${BREAKFAST_PER_GUEST_PER_NIGHT}/guest/night)`
+      : "not included";
+    const lines = [
+      "**Booking summary**",
+      `- Guest: ${this.name}`,
+      `- Room: ${this.roomType} (€${this.roomRate}/night)`,
+      `- Check-in: ${this.checkin}`,
+      `- Check-out: ${this.checkout}`,
+      `- Nights: ${n}`,
+      `- Guests: ${this.guests}`,
+      `- Breakfast: ${bf}`,
+      `- Payment: ${this.payment}`,
+      "",
+      "**Pricing**",
+      `- Room (${n} × €${this.roomRate}): **€${this.roomCost()}**`,
+    ];
+    if (this.breakfast) {
+      lines.push(
+        `- Breakfast (${this.guests} × ${n} × €${BREAKFAST_PER_GUEST_PER_NIGHT}): ` +
+        `**€${this.breakfastCost()}**`
+      );
+    }
+    lines.push(`- **Total: €${this.totalCost()}**`);
+    lines.push("");
+    lines.push("Shall I confirm this booking? (yes / no)");
+    return lines.join("\n");
+  }
+}
+
+const MY_BOOKINGS_KEY = "birol.myBookings";
+
+/** Tag a booking ID as belonging to *this* browser session.
+ *  Used so booking.html only shows the current guest's reservation. */
+function trackMyBooking(id) {
+  try {
+    const raw = sessionStorage.getItem(MY_BOOKINGS_KEY);
+    const list = raw ? JSON.parse(raw) : [];
+    if (!list.includes(id)) list.push(id);
+    sessionStorage.setItem(MY_BOOKINGS_KEY, JSON.stringify(list));
+  } catch (e) { /* sessionStorage may not be available (Safari private) */ }
+}
+
+function getMyBookingIds() {
+  try {
+    const raw = sessionStorage.getItem(MY_BOOKINGS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) { return []; }
 }
 
 function saveBooking(booking) {
   booking.booking_id = "BH-" + Math.random().toString(16).slice(2, 10).toUpperCase();
-  booking.status = "confirmed";
+  booking.status     = "confirmed";
+  // Persist the computed price too so the receipt page never has to
+  // recalculate (and historical bookings stay accurate even if the
+  // price model changes later).
+  if (typeof booking.totalCost === "function") {
+    booking.total_eur = booking.totalCost();
+  }
   const all = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
   all.push({ ...booking });
   localStorage.setItem(STORE_KEY, JSON.stringify(all));
+  trackMyBooking(booking.booking_id);
   return booking.booking_id;
 }
 
@@ -364,6 +456,7 @@ class BookingConversation {
     const b = this.booking;
     if (!b.name) return "name";
     if (!(b.checkin && b.checkout)) return "dates";
+    if (!b.roomType) return "room_type";
     if (!b.guests) return "guests";
     if (b.breakfast === null) return "breakfast";
     if (!b.payment) return "payment";
@@ -386,6 +479,7 @@ const CONCIERGE_INTENTS = new Set([
   "check_in_time", "breakfast_hours", "wifi", "parking",
   "amenities", "cancellation_policy", "pets", "currency_info",
   "tipping", "language", "hotel_contact", "neighborhood", "emergency",
+  "room_types",
 ]);
 
 /** Minimum confidence needed to actually respond as this intent. */
@@ -487,9 +581,13 @@ class HotelBookingBot {
     // --- Confirm slot: keyword-based yes/no, not tag-based ---
     if (this.session.currentSlot === "confirm") {
       if (isAffirmative(message, intent)) {
-        const snapshot = { ...this.session.booking };
-        const id = saveBooking(snapshot);
-        const ci = snapshot.checkin;
+        // Pass the live Booking instance so saveBooking can call
+        // totalCost() before serialising. After save, reset the
+        // session — the original instance reference still has the
+        // values we need for the reply.
+        const live = this.session.booking;
+        const ci = live.checkin;
+        const id = saveBooking(live);
         this.session.reset();
         return {
           reply:
@@ -528,7 +626,7 @@ We look forward to welcoming you to ${HOTEL_NAME} on ${ci}. ` +
         };
       }
       if (this.tryFillSlotFromMessage(message)) {
-        return { reply: this.promptForNextSlot() };
+        return this.promptForNextSlot();
       }
       // Nothing matched — user said something off-topic.
       return {
@@ -540,7 +638,7 @@ We look forward to welcoming you to ${HOTEL_NAME} on ${ci}. ` +
     // --- Inside the booking: try to extract ---
     if (this.tryFillSlotFromMessage(message)) {
       this.session.fallbackCount = 0;
-      return { reply: this.promptForNextSlot() };
+      return this.promptForNextSlot();
     }
 
     // Mid-booking fallback — keep nudging, don't go off-topic.
@@ -561,8 +659,9 @@ We look forward to welcoming you to ${HOTEL_NAME} on ${ci}. ` +
     switch (this.session.currentSlot) {
       case "name":      return "May I have your **full name**, please?";
       case "dates":     return "Please share your **check-in and check-out dates** (e.g. *2026-05-10 to 2026-05-14*).";
+      case "room_type": return "**Which room type** would you like — Standard, Deluxe, King Suite, or Bosphorus Suite?";
       case "guests":    return "**How many guests** will be staying?";
-      case "breakfast": return "Would you like to **include breakfast**? (yes / no)";
+      case "breakfast": return `Would you like to **include breakfast** (+€${BREAKFAST_PER_GUEST_PER_NIGHT}/guest/night)? (yes / no)`;
       case "payment":   return "How would you like to pay: **credit card**, **debit card**, or **pay at the hotel**?";
       case "confirm":   return b.summary();
       default:          return "How may I help you?";
@@ -585,6 +684,14 @@ We look forward to welcoming you to ${HOTEL_NAME} on ${ci}. ` +
         filled = true;
       }
     }
+    if (!b.roomType && this.session.currentSlot === "room_type") {
+      const room = findRoomType(message);
+      if (room) {
+        b.roomType = room.name;
+        b.roomRate = room.rate;
+        filled = true;
+      }
+    }
     if (!b.guests && this.session.currentSlot === "guests") {
       const g = extractGuestCount(message);
       if (g) { b.guests = g; filled = true; }
@@ -604,35 +711,85 @@ We look forward to welcoming you to ${HOTEL_NAME} on ${ci}. ` +
     return filled;
   }
 
+  /**
+   * Advance the slot machine and produce {reply, actions} for the next
+   * question. Multiple slots offer quick-reply chips so common answers
+   * can be tapped instead of typed.
+   */
   promptForNextSlot() {
     const nxt = this.session.nextMissingSlot();
     this.session.currentSlot = nxt;
     const b = this.session.booking;
+    const n = b.nights();
+    const nightsTxt = `${n} night${n !== 1 ? "s" : ""}`;
+
     switch (nxt) {
-      case "name": return "May I have your **full name**, please?";
+      case "name":
+        return { reply: "May I have your **full name**, please?" };
+
       case "dates":
-        return `Thank you, **${b.name}**! When would you like to stay with us? ` +
-               "Please share your **check-in and check-out dates** " +
-               "(e.g. *2026-05-10 to 2026-05-14*).";
+        return {
+          reply:
+            `Thank you, **${b.name}**! When would you like to stay with us? ` +
+            "Please share your **check-in and check-out dates** " +
+            "(e.g. *2026-05-10 to 2026-05-14*).",
+        };
+
+      case "room_type": {
+        const reply =
+          `Got it — ${b.checkin} to ${b.checkout} (${nightsTxt}).\n\n` +
+          "**Which room would you like?**";
+        const actions = ROOM_TYPES.map(r => ({
+          label: `${r.name} · €${r.rate}/night${n ? `  ·  €${r.rate * n} for ${nightsTxt}` : ""}`,
+          send:  r.name,
+        }));
+        return { reply, actions };
+      }
+
       case "guests":
-        return `Got it — ${b.checkin} to ${b.checkout} (${b.nights()} night` +
-               `${b.nights() !== 1 ? "s" : ""}). **How many guests** will be staying?`;
+        return {
+          reply:
+            `**${b.roomType}** at €${b.roomRate}/night — lovely choice. ` +
+            "**How many guests** will be staying?",
+        };
+
       case "breakfast":
-        return `Noted — ${b.guests} guest${b.guests !== 1 ? "s" : ""}. ` +
-               "Would you like to **include breakfast**? (yes / no)";
+        return {
+          reply:
+            `Noted — ${b.guests} guest${b.guests !== 1 ? "s" : ""}. ` +
+            "Would you like to **include breakfast**? It's an extra " +
+            `**€${BREAKFAST_PER_GUEST_PER_NIGHT} per guest per night**.`,
+          actions: [
+            { label: "Yes, include breakfast", send: "yes" },
+            { label: "No breakfast, thanks",   send: "no"  },
+          ],
+        };
+
       case "payment":
-        return "How would you like to pay: **credit card**, **debit card**, or **pay at the hotel**?";
-      case "confirm": return b.summary();
+        return {
+          reply:
+            "How would you like to pay: **credit card**, **debit card**, " +
+            "or **pay at the hotel**?",
+          actions: [
+            { label: "Credit card",  send: "credit card"  },
+            { label: "Debit card",   send: "debit card"   },
+            { label: "Pay at hotel", send: "pay at hotel" },
+          ],
+        };
+
+      case "confirm":
+        return { reply: b.summary() };
     }
-    return "Let me know how I can help further.";
+    return { reply: "Let me know how I can help further." };
   }
 
   fallbackHint() {
     const hints = {
       name:      "Sorry, I didn't get that. Could you share your full name?",
       dates:     "I couldn't parse the dates. Please try e.g. *2026-05-10 to 2026-05-14*.",
+      room_type: "Please pick a room: **Standard**, **Deluxe**, **King Suite**, or **Bosphorus Suite**.",
       guests:    "Could you tell me the number of guests as a digit (e.g. *2*)?",
-      breakfast: "Would you like breakfast? Please answer *yes* or *no*.",
+      breakfast: `Would you like breakfast (+€${BREAKFAST_PER_GUEST_PER_NIGHT}/guest/night)? Please answer *yes* or *no*.`,
       payment:   "Please choose: credit card, debit card, or pay at the hotel.",
       confirm:   "Shall I confirm the booking? Please answer *yes* or *no*.",
     };
@@ -645,9 +802,27 @@ window.BirolBot = {
   HotelBookingBot,
   unavailableDates,
   HOTEL_NAME,
+  ROOM_TYPES,
+  BREAKFAST_PER_GUEST_PER_NIGHT,
+
+  /** ALL bookings on this device — used by the CEO admin dashboard. */
   getBookings: () => JSON.parse(localStorage.getItem(STORE_KEY) || "[]"),
-  getBooking: (id) => {
+
+  /** Just the bookings made in *this* tab/session — what a guest sees. */
+  getMyBookings: () => {
+    const ids = new Set(getMyBookingIds());
+    if (!ids.size) return [];
     const all = JSON.parse(localStorage.getItem(STORE_KEY) || "[]");
-    return all.find(b => b.booking_id === id) || null;
+    return all.filter(b => ids.has(b.booking_id));
+  },
+
+  /** Lookup helpers (admin scope vs guest scope). */
+  getBooking:   (id) => JSON.parse(localStorage.getItem(STORE_KEY) || "[]")
+                          .find(b => b.booking_id === id) || null,
+  getMyBooking: (id) => {
+    const ids = new Set(getMyBookingIds());
+    if (!ids.has(id)) return null;
+    return (JSON.parse(localStorage.getItem(STORE_KEY) || "[]")
+              .find(b => b.booking_id === id)) || null;
   },
 };

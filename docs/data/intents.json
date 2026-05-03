@@ -152,6 +152,23 @@
       ]
     },
     {
+      "tag": "room_types",
+      "patterns": [
+        "room types", "what rooms", "which rooms", "room options",
+        "available rooms", "types of rooms", "show me the rooms",
+        "room price", "room prices", "how much per night",
+        "nightly rate", "rates", "what's the price", "cost per night",
+        "what's the room rate", "how much does it cost", "room categories",
+        "what rooms do you have", "which rooms do you have",
+        "what kind of rooms do you have", "what kind of rooms",
+        "tell me about the rooms", "show me the room options",
+        "what suites do you have", "what's the cost"
+      ],
+      "responses": [
+        "**Birol Hotel rooms & rates:**\n\n• **Standard Room** — €120/night — 22 m², courtyard view, queen bed\n• **Deluxe Room** — €180/night — 32 m², city view, king bed, marble bath\n• **King Suite** — €280/night — 48 m², separate sitting area, two-person tub\n• **Bosphorus Suite** — €420/night — 65 m², floor-to-ceiling windows, private terrace\n\nBreakfast is **+€10 per guest per night** on any room. Just say *book a room* to begin."
+      ]
+    },
+    {
       "tag": "places_to_visit",
       "patterns": [
         "places to visit", "what to visit", "attractions", "sightseeing",
@@ -242,7 +259,8 @@
       "tag": "amenities",
       "patterns": [
         "amenities", "facilities", "spa", "pool", "gym", "fitness",
-        "what do you have", "hotel amenities", "services", "hotel facilities",
+        "what amenities do you have", "what facilities do you have",
+        "hotel amenities", "services", "hotel facilities",
         "swimming pool", "fitness center", "workout", "sauna",
         "steam room", "hammam", "bar", "lounge"
       ],

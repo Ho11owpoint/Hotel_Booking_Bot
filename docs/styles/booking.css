@@ -308,6 +308,7 @@ body::before {
   font-weight: 500;
 }
 .details dd.status-cell { text-transform: capitalize; color: #a8efcc; }
+.details dd.total       { font-size: 1.1rem; color: #ffffff; font-weight: 600; }
 
 /* ---------- Card actions ---------- */
 .card-actions {

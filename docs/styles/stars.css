@@ -1,0 +1,73 @@
+/* ===========================================================
+   Shared minimalistic shooting-star background
+   ===========================================================
+   Five spans sharing one keyframe; each gets its own delay,
+   duration, and starting position so they never feel synchronised.
+   Pure CSS — no JS — pointer-events: none so they never block UI.
+   =========================================================== */
+
+.stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.stars span {
+  position: absolute;
+  display: block;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.85);
+  opacity: 0;
+  /* The trail */
+  --trail: 90px;
+  animation: shoot 9s linear infinite;
+  will-change: transform, opacity;
+}
+
+.stars span::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: var(--trail);
+  height: 1px;
+  transform: translateY(-50%);
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.85),
+    rgba(255, 255, 255, 0)
+  );
+}
+
+/* Five stars, each with its own start position + timing.
+   Streaks travel from upper-right toward lower-left, like a meteor
+   shower. Long delays mean the screen is mostly quiet, with one
+   shooting through every few seconds. */
+.stars span:nth-child(1) { top:  8%; left: 96%; animation-delay:  0s;  animation-duration:  7s; }
+.stars span:nth-child(2) { top: 22%; left: 90%; animation-delay:  4s;  animation-duration: 11s; }
+.stars span:nth-child(3) { top: 45%; left: 88%; animation-delay:  9s;  animation-duration:  9s; }
+.stars span:nth-child(4) { top: 65%; left: 95%; animation-delay: 13s;  animation-duration: 12s; }
+.stars span:nth-child(5) { top: 33%; left: 80%; animation-delay: 18s;  animation-duration: 10s; }
+
+@keyframes shoot {
+  0%   { transform: translate3d(0, 0, 0);            opacity: 0; }
+  3%   {                                             opacity: 0.85; }
+  20%  {                                             opacity: 0.85; }
+  35%  { transform: translate3d(-560px, 320px, 0);   opacity: 0; }
+  100% { transform: translate3d(-560px, 320px, 0);   opacity: 0; }
+}
+
+/* Respect users who explicitly want less motion */
+@media (prefers-reduced-motion: reduce) {
+  .stars span { animation: none; opacity: 0; }
+}
+
+/* Hide on print */
+@media print {
+  .stars { display: none; }
+}
