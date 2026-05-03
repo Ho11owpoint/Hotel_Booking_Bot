@@ -10,6 +10,10 @@
 // ============================================================
 
 (function () {
+  // Visible in the browser console; if you see anything other than v6
+  // in DevTools you're running cached code — hard-refresh with Ctrl+Shift+R.
+  console.log("[Birol Hotel admin] build v6 loaded");
+
   const PASSWORD    = "egemen";
   const SESSION_KEY = "birol.admin.session";
 
