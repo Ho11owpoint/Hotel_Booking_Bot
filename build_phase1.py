@@ -1,6 +1,6 @@
 """
 Build Phase 1 (Conception) PDF for the Birol Hotel chatbot.
-Course: IU CSEMAIPAIUC01 — Project: AI Use Case (Task 1, Hotel booking).
+Course: IU CSEMAIPAIUC01 - Project: AI Use Case (Task 1, Hotel booking).
 
 Follows the lecture-prescribed structure:
   * Value-proposition template (Lec 01)
@@ -10,7 +10,7 @@ Follows the lecture-prescribed structure:
   * Workplan, AI ethics and sustainability notes (Lec 01)
 
 Output:
-  AIUseCase_Hotel_P1/Birol-Egemen_12345678_AIUseCase_Hotel_Submission_Concept.pdf
+  AIUseCase_Hotel_P1/Birol-Egemen_10254279_AIUseCase_Hotel_Submission_Concept.pdf
 """
 
 from __future__ import annotations
@@ -40,7 +40,11 @@ FIG_DIR = OUT_DIR / "figures"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 
-OUT_PATH = OUT_DIR / "Birol-Egemen_12345678_AIUseCase_Hotel_Submission_Concept.pdf"
+OUT_PATH = OUT_DIR / "Birol-Egemen_10254279_AIUseCase_Hotel_Submission_Concept.pdf"
+# Old (placeholder) PDF that's now superseded — clean it up if it exists.
+_OLD_PDF = OUT_DIR / "Birol-Egemen_12345678_AIUseCase_Hotel_Submission_Concept.pdf"
+if _OLD_PDF.exists():
+    _OLD_PDF.unlink()
 
 # --------------------------------------------------------------------------- #
 # Visual identity                                                              #
@@ -177,7 +181,7 @@ def make_use_case(out: Path) -> None:
     # «extend»
     _arrow(ax, (4.7, 3.55), (4.4, 3.95), label="«extend»\n(card only)", ls="--", color=BRASS)
 
-    # (caption rendered separately by reportlab — no in-figure duplicate)
+    # (caption rendered separately by reportlab - no in-figure duplicate)
     fig.tight_layout()
     fig.savefig(out, dpi=210, bbox_inches="tight", facecolor=PAPER)
     plt.close(fig)
@@ -270,7 +274,7 @@ def make_sequence(out: Path) -> None:
     msg("Booking\nStore", "Aria Bot\nrespond()", "BH-XXXXXXXX", 0.30, ls="--",
         color=ACCENT_DARK)
 
-    # (caption rendered separately by reportlab — no in-figure duplicate)
+    # (caption rendered separately by reportlab - no in-figure duplicate)
     fig.tight_layout()
     fig.savefig(out, dpi=210, bbox_inches="tight", facecolor=PAPER)
     plt.close(fig)
@@ -352,7 +356,7 @@ def make_state(out: Path) -> None:
             "● Red    = restart edge",
             fontsize=8, color=INK_SOFT)
 
-    # (caption rendered separately by reportlab — no in-figure duplicate)
+    # (caption rendered separately by reportlab - no in-figure duplicate)
     fig.tight_layout()
     fig.savefig(out, dpi=210, bbox_inches="tight", facecolor=PAPER)
     plt.close(fig)
@@ -364,11 +368,8 @@ def make_component(out: Path) -> None:
     ax.set_xlim(0, 11); ax.set_ylim(0, 6.4)
     ax.set_aspect("equal"); ax.axis("off")
 
-    ax.text(5.5, 6.10, "Figure 4 — Component & deployment diagram",
-            ha="center", fontsize=11, fontweight="bold")
-    ax.text(5.5, 5.85,
-            "Static-site architecture — auto-deploys from GitHub on every push.",
-            ha="center", fontsize=8, style="italic", color=INK_SOFT)
+    # No in-figure caption: reportlab adds the caption below the image,
+    # avoiding duplication with the other figures.
 
     # Edge servers / GitHub
     _box(ax, (0.4, 4.4), 2.4, 0.8, "GitHub repository\n(main branch · /docs)",
@@ -502,104 +503,101 @@ def build_pdf(figs: dict[str, Path]) -> None:
         str(OUT_PATH), pagesize=A4,
         leftMargin=2 * cm, rightMargin=2 * cm,
         topMargin=2 * cm, bottomMargin=2 * cm,
-        title="Phase 1 — Conception · Hotel Booking Chatbot",
+        title="Phase 1: Conception, Hotel Booking Chatbot",
         author="Egemen Birol",
     )
     story = []
 
     # ------------------- Cover ------------------- #
-    story.append(Paragraph("Phase 1 — Conception", h1))
+    story.append(Paragraph("Phase 1: Conception", h1))
     story.append(Paragraph(
-        "Hotel Booking Chatbot · <b>Birol Hotel</b><br/>"
+        "Hotel Booking Chatbot for <b>Birol Hotel</b><br/>"
         "IU International University of Applied Sciences<br/>"
-        "Course: Project — AI Use Case (CSEMAIPAIUC01) · Task 1<br/>"
-        "Student: <b>Birol, Egemen</b>  ·  Matriculation 12345678  ·  Berlin",
+        "Course: Project: AI Use Case (CSEMAIPAIUC01), Task 1<br/>"
+        "Student: <b>Birol, Egemen</b>, Matriculation 10254279",
         meta))
 
     # ------------------- Value proposition ------------------- #
     story.append(Paragraph("1. Value proposition", h2))
     story.append(Paragraph(
-        "Following the lecture's value-proposition canvas (Lec 01) the project is positioned as follows:",
+        "Using the value-proposition canvas from Lecture 01:",
         body))
     story.append(Paragraph(
-        "<b>For</b> leisure and business travellers (the minimum viable segment) "
-        "who want to book a hotel room in under a minute,<br/>"
-        "<b>Dissatisfied with</b> long multi-step web forms that demand account "
-        "creation, hide live availability behind filters, and behave poorly on phones,<br/>"
-        "<b>Due to</b> the unmet need for a fast, mobile-friendly, conversational "
-        "booking flow that combines reservation, hotel info and Istanbul tourism advice in one channel,<br/>"
-        "<b>Birol Hotel</b> offers <b>Aria</b>, a conversational booking concierge,<br/>"
-        "<b>That provides</b> a single-channel chat interface, instant confirmation "
-        "with a unique reference, transparent pricing, in-bot card capture, "
-        "session-isolated receipts, a CEO occupancy dashboard, and 24/7 availability — all "
-        "without account creation.",
+        "<b>For</b> leisure and business travellers who want to book a hotel "
+        "room quickly on their phone,<br/>"
+        "<b>Dissatisfied with</b> long multi-step web forms that require "
+        "account creation and feel clumsy on a small screen,<br/>"
+        "<b>Due to</b> the lack of a single channel that handles the booking "
+        "and answers basic questions about the hotel and the city,<br/>"
+        "<b>Birol Hotel</b> offers <b>Aria</b>, a chat-based booking assistant,<br/>"
+        "<b>That provides</b> a guided conversation, an instant booking reference, "
+        "a clear total price, an in-chat card form, a personal receipt page, an "
+        "admin dashboard for the hotel, and a 24/7 service that does not need "
+        "an account.",
         valuep))
 
     # ------------------- Aims, MVS, MVP ------------------- #
     story.append(Paragraph("2. Aims, target audience and MVP scope", h2))
     story.append(Paragraph(
-        "<b>Aims.</b> Aria's primary aim is to capture the minimum information "
-        "required to create a valid room reservation through natural-language "
-        "dialogue (per the assignment: name, time period, number of guests are "
-        "mandatory; payment and breakfast are optional extensions). The secondary "
-        "aim is to act as a 24/7 concierge, answering common questions about the "
-        "hotel and Istanbul, and to offer a CEO-only occupancy view of the property.",
+        "<b>Aims.</b> The main aim of the chatbot is to collect the information "
+        "needed to make a hotel reservation through a short conversation. The "
+        "assignment requires three mandatory fields: name, time period, and "
+        "number of guests. Payment and breakfast are added as optional extensions. "
+        "A second aim is to answer simple questions about the hotel and about "
+        "Istanbul, and to give the hotel staff a small admin view of the bookings.",
         body))
     story.append(Paragraph(
-        "<b>Minimum Viable Segment (MVS, Lec 01).</b> English-speaking leisure "
-        "and business travellers, mostly on mobile (≈ 70 % of online hotel "
-        "bookings originate on phones). The same segment is reachable via a "
-        "single channel: a website / WebView-wrapped iOS app distributed by URL.",
+        "<b>Minimum Viable Segment (MVS).</b> English-speaking leisure and "
+        "business travellers, most of them on a phone. They can be reached "
+        "through one channel: a web page (also embedded in a small iOS app).",
         body))
     story.append(Paragraph(
-        "<b>Minimum Viable Product (MVP).</b> A static web app + thin iOS shell "
-        "that delivers, end-to-end, the smallest set of features that satisfy the "
-        "core need: a guided booking dialogue (eight slots: name, dates, "
-        "room_type, guests, breakfast, payment, payment_card, confirm), 15 "
-        "concierge Q&A intents, a soft-fall fallback for off-topic queries, a "
-        "calendar widget with availability overlays, an in-bot card form, "
-        "per-session receipt isolation, and a password-gated admin dashboard.",
+        "<b>Minimum Viable Product (MVP).</b> A static web app with a guided "
+        "booking dialogue covering eight slots (name, dates, room type, guests, "
+        "breakfast, payment, payment_card, confirm), 16 concierge Q&amp;A "
+        "intents, a fallback for unrelated questions, a calendar widget that "
+        "shows which dates are full, an in-chat card form, a personal receipt "
+        "page, and a password-protected admin page for the hotel.",
         body))
 
     # ------------------- Why this design ------------------- #
     story.append(Paragraph("3. Structure and process rationale", h2))
     story.append(Paragraph(
-        "A <b>slot-filling state machine</b> was chosen over a free-form LLM "
-        "for three reasons. (1) <i>Correctness is paramount</i> in a booking "
-        "system — a hallucinated reservation is unacceptable. (2) <i>Auditability</i>: "
-        "the dialog graph is visible in source and trivially reviewable by a "
-        "tutor or a QA engineer. (3) <i>Cost &amp; privacy</i>: the project runs "
-        "entirely client-side, so no PII ever leaves the device, and there is "
-        "no per-message inference bill.",
+        "The dialogue is built as a <b>slot-filling state machine</b> rather "
+        "than a free-form language model. The booking domain is small and the "
+        "set of fields is fixed, so a simple state machine fits well. It is "
+        "also easier to read and grade: the whole dialogue graph is visible in "
+        "the source code, and there is no risk of the model inventing a wrong "
+        "reservation.",
         body))
     story.append(Paragraph(
-        "A <b>static-site architecture</b> was chosen over Rasa or Dialogflow "
-        "because the assignment grading machine must be able to run the system "
-        "with no setup — GitHub Pages eliminates the install step entirely, "
-        "and the iOS app is a thin WKWebView wrapper that auto-updates whenever a "
-        "commit lands on <code>main</code> (zero re-install for the user).",
+        "The system is built as a <b>static web app</b>, hosted on GitHub "
+        "Pages. This was chosen so the project can be opened in a browser "
+        "without any installation, which makes grading easier. The iOS app is "
+        "a small WKWebView wrapper around the same site, so a push to the "
+        "repository updates the app on the next launch with no rebuild.",
         body))
 
     # ------------------- Frameworks comparison ------------------- #
-    story.append(Paragraph("4. Frameworks, tools and trade-offs (Lec 01)", h2))
+    story.append(Paragraph("4. Frameworks, tools and trade-offs", h2))
     tdata = [
         ["", "Rasa", "Dialogflow", "Custom (chosen)"],
         ["Hosting",  "Self-host server",   "Google Cloud",
-         "GitHub Pages (free, HTTPS)"],
+         "GitHub Pages (free)"],
         ["Setup at grading time", "Heavy install\n(broken on Py 3.14)",
          "Google account + internet", "Open the URL"],
-        ["NLU",      "Built-in pipeline (DIET, etc.)",
+        ["NLU",      "Built-in pipeline\n(DIET, etc.)",
          "Hosted neural model", "Bag-of-words + cosine + regex"],
         ["Dialog",   "Rule + ML stories", "Contexts / fulfilment",
          "Slot-filling FSM (8 slots)"],
-        ["Cost / mo","Server costs",      "Per-call API bill",
-         "€0 (Pages free tier)"],
-        ["Privacy",  "All on your server", "PII to Google",
-         "All client-side, never leaves device"],
-        ["iOS path", "Need backend + API", "Need backend + API",
+        ["Cost / month", "Server costs",  "Per-call API bill",
+         "EUR 0 (Pages free tier)"],
+        ["Privacy",  "On your server",   "PII to Google",
+         "All client-side"],
+        ["iOS path", "Backend + API",    "Backend + API",
          "Same site in WKWebView"],
-        ["Auditable","Yes",               "Partly (cloud config)",
-         "Yes — every line in repo"],
+        ["Auditable","Yes",              "Partly (cloud config)",
+         "Yes (every line in repo)"],
     ]
     table = Table(tdata, colWidths=[3.0 * cm, 4.0 * cm, 4.0 * cm, 5.0 * cm])
     table.setStyle(TableStyle([
@@ -621,140 +619,141 @@ def build_pdf(figs: dict[str, Path]) -> None:
     story.append(table)
     story.append(Spacer(1, 4))
     story.append(Paragraph(
-        "<b>Decision:</b> Custom static stack. The decisive factors are zero-setup "
-        "for the grader, full client-side privacy, and the auto-update path for "
-        "the iOS app (push to GitHub → app reloads on launch). The trade-off is "
-        "weaker semantic generalisation than a neural NLU; we accept this because "
-        "the booking domain is closed and a paraphrase that misses our pattern "
-        "library hits a graceful soft-fall fallback chip menu.",
+        "<b>Decision.</b> The custom static stack was chosen because it can be "
+        "opened by the grader without any installation, all data stays on the "
+        "device, and the iOS app updates automatically on every push to the "
+        "repository. The trade-off is that a hand-written classifier does not "
+        "generalise to paraphrases as well as a neural model, but the booking "
+        "domain is small and the bot offers a fallback menu when a sentence "
+        "does not match any pattern.",
         body))
 
     # ------------------- Mandatory vs optional ------------------- #
     story.append(Paragraph("5. Information captured", h2))
     story.append(Paragraph(
-        "<b>Mandatory (assignment spec):</b> guest name · stay period (check-in &amp; "
-        "check-out) · number of guests.<br/>"
-        "<b>Optional extensions implemented:</b> room type (Standard / Deluxe / "
-        "King Suite / Bosphorus Suite — €120 / €180 / €280 / €420 per night), "
-        "breakfast preference (+€10 / guest / night), payment method (credit · "
-        "debit · pay-at-hotel), and a glass card-form interlude for credit/debit "
-        "with a Pay-€<i>X</i> button that performs no real charge.",
+        "<b>Mandatory (assignment spec):</b> guest name, stay period (check-in "
+        "and check-out), number of guests.<br/>"
+        "<b>Optional extensions implemented:</b> room type (Standard, Deluxe, "
+        "King Suite, Bosphorus Suite at EUR 120, 180, 280 and 420 per night), "
+        "breakfast option (+EUR 10 per guest per night), payment method "
+        "(credit card, debit card, or pay at the hotel), and a card form for "
+        "the two card options that asks the guest to click a Pay button. "
+        "The card form only collects the data: it does not run a real charge.",
         body))
 
     story.append(PageBreak())
 
     # ------------------- UML 1: Use case ------------------- #
-    story.append(Paragraph("6. UML — Use case diagram", h2))
+    story.append(Paragraph("6. UML: Use case diagram", h2))
     story.append(Paragraph(
-        "Use cases are grouped by colour: <b>concierge</b> (warm cream), "
-        "<b>booking</b> (teal), <b>admin</b> (rose). Guest is the primary actor "
-        "for booking and concierge use cases; CEO is the primary actor for the "
-        "admin dashboard. Browser storage is a secondary actor that persists "
-        "confirmed reservations (<i>localStorage</i>) and the per-guest receipt "
-        "scope (<i>sessionStorage</i>).",
+        "The use cases are grouped by area: concierge (cream), booking (teal) "
+        "and admin (rose). The Guest is the main actor for the booking and "
+        "concierge cases, the CEO is the main actor for the admin dashboard, "
+        "and the browser storage is a secondary actor that keeps the bookings "
+        "(localStorage) and the personal receipt scope (sessionStorage).",
         body))
     story.append(Image(str(figs["use_case"]), width=17 * cm, height=11 * cm,
                        kind="proportional"))
     story.append(Paragraph(
-        "Figure 1 — Use case diagram. Includes 14 use cases across three "
-        "swim-lanes (concierge / booking / admin). «include» and «extend» "
-        "relationships drawn per Lec 02.", caption))
+        "Figure 1. Use case diagram with 14 use cases grouped into three areas. "
+        "Include and extend relationships are shown with dashed arrows.",
+        caption))
 
     story.append(PageBreak())
 
     # ------------------- UML 2: Sequence ------------------- #
-    story.append(Paragraph("7. UML — Sequence diagram (booking happy path)", h2))
+    story.append(Paragraph("7. UML: Sequence diagram (booking happy path)", h2))
     story.append(Paragraph(
-        "The lifelines model the runtime topology: the <b>Web UI</b> "
-        "(chat.js + chat.html) talks to the <b>Aria Bot</b> (bot.js's "
-        "<code>HotelBookingBot.respond</code>), which in turn calls the "
-        "<b>Intent Classifier</b> and the <b>Entity Extractors</b>. The "
-        "<b>Booking Store</b> writes to localStorage on confirmation. The two "
-        "interactive widgets (calendar and card form) are rendered by the Web "
-        "UI in response to slot transitions returned by the bot.",
+        "The lifelines show the runtime layers: the web UI (chat.js + "
+        "chat.html) sends each user message to the bot (bot.js, "
+        "<code>HotelBookingBot.respond</code>), which calls the intent "
+        "classifier and the entity extractors. The booking store writes to "
+        "localStorage on confirmation. The two interactive widgets (calendar "
+        "and card form) are rendered by the UI in response to slot changes "
+        "returned by the bot.",
         body))
     story.append(Image(str(figs["sequence"]), width=17 * cm, height=12 * cm,
                        kind="proportional"))
     story.append(Paragraph(
-        "Figure 2 — Sequence diagram for the booking happy path, including "
-        "the calendar widget and the new card-payment interlude.", caption))
+        "Figure 2. Sequence diagram for the booking happy path, including "
+        "the calendar widget and the new card-payment step.", caption))
 
     story.append(PageBreak())
 
     # ------------------- UML 3: State ------------------- #
-    story.append(Paragraph("8. UML — State machine (slot machine)", h2))
+    story.append(Paragraph("8. UML: State machine (slot machine)", h2))
     story.append(Paragraph(
-        "The dialog manager is a finite-state machine. Each slot has a deterministic "
-        "transition function: a slot is filled by an entity extractor, the FSM "
-        "advances to the next-missing slot. Mandatory slots are highlighted in "
-        "brass (per the assignment spec). Concierge intents are handled "
-        "<i>transversally</i> — they answer the question and then re-prompt the "
-        "current slot, so a user can ask <i>where should I eat?</i> mid-booking "
-        "without losing their place. The card form is the new <code>payment_card</code> "
-        "state; pay-at-hotel skips it entirely.",
+        "The dialogue manager is a finite-state machine. A slot is filled by "
+        "an entity extractor and the machine advances to the next missing "
+        "slot. The three mandatory slots are highlighted in brass (per the "
+        "assignment). Concierge intents are answered without changing the "
+        "current slot, so the user can ask, for example, <i>where should I "
+        "eat?</i> in the middle of a booking without losing their place. The "
+        "<code>payment_card</code> state is reached only when the user picks "
+        "credit or debit card; pay-at-hotel goes straight to confirm.",
         body))
     story.append(Image(str(figs["state"]), width=17 * cm, height=8 * cm,
                        kind="proportional"))
     story.append(Paragraph(
-        "Figure 3 — State machine for the conversation flow.", caption))
+        "Figure 3. State machine for the booking conversation.", caption))
 
     # ------------------- UML 4: Component / deployment ------------------- #
-    story.append(Paragraph("9. UML — Component &amp; deployment", h2))
+    story.append(Paragraph("9. UML: Component and deployment", h2))
     story.append(Paragraph(
-        "The runtime is a single web container (the browser, or a WKWebView in the "
-        "iOS app). All logic and data live inside that container. The deployment "
-        "loop is push → Pages CDN rebuild → next-launch refresh — no servers, no "
-        "build step, no native binary update.",
+        "The whole system runs inside a single web container (the browser, or "
+        "a WKWebView in the iOS app). The deployment loop is: push to "
+        "GitHub, Pages rebuilds the site, the next page load downloads the "
+        "new files. There is no server, no build step and no native binary to "
+        "rebuild.",
         body))
     story.append(Image(str(figs["component"]), width=17 * cm, height=10 * cm,
                        kind="proportional"))
     story.append(Paragraph(
-        "Figure 4 — Component &amp; deployment diagram.", caption))
+        "Figure 4. Component and deployment diagram.", caption))
 
     story.append(PageBreak())
 
     # ------------------- Workflow ------------------- #
-    story.append(Paragraph("10. Chatbot development workflow (Lec 03/04)", h2))
+    story.append(Paragraph("10. Chatbot development workflow", h2))
     story.append(Paragraph(
-        "The classical chatbot pipeline (define scope → intents → training data → "
-        "conversation flow → train/test → iterate → deploy) maps directly onto the "
-        "Rasa workflow taught in lecture, even though the prototype hand-implements "
-        "each stage in plain JS. Below is the version that materialised in this project:",
+        "The pipeline taught in Lecture 03/04 (define scope, list intents and "
+        "entities, write training data, define the conversation flow, train "
+        "and test, iterate, deploy) is followed in this project. Each stage "
+        "produces a file in the repository.",
         body))
     story.append(Image(str(figs["workflow"]), width=17 * cm, height=4.5 * cm,
                        kind="proportional"))
     story.append(Paragraph(
-        "Figure 5 — Project pipeline. Each stage produced an artifact in the repo "
-        "(domain via intents.json, training data via patterns, conversation flow "
-        "via the slot machine in chatbot.py / bot.js, tests in test_bot.py and "
-        "test_web_bot.js, deploy via GitHub Pages). 35 web tests + 17 Python tests "
-        "passing at the time of writing.", caption))
+        "Figure 5. Project pipeline. The scope is in intents.json, the "
+        "training data is in the patterns of each intent, the conversation "
+        "flow is in chatbot.py / bot.js, the tests are in test_bot.py and "
+        "test_web_bot.js, and deploy is to GitHub Pages.", caption))
 
     # ------------------- Data model ------------------- #
-    story.append(Paragraph("11. Data &amp; knowledge model", h2))
+    story.append(Paragraph("11. Data and knowledge model", h2))
     story.append(Paragraph(
-        "<b>Knowledge base — intents.json (14 intents, ~120 patterns):</b> "
-        "<i>greet, book_room, provide_name, provide_dates, provide_guests, "
-        "breakfast_yes, breakfast_no, provide_payment, confirm_yes, confirm_no, "
-        "goodbye, thanks, help, fallback</i> + 16 concierge intents "
-        "(<i>places_to_visit, food_recommendations, transport_airport, "
-        "check_in_time, breakfast_hours, wifi, parking, amenities, "
-        "cancellation_policy, pets, currency_info, tipping, language, "
-        "hotel_contact, neighborhood, emergency, room_types</i>).",
+        "<b>Intents (intents.json):</b> 14 intents for the booking flow and "
+        "general dialogue (greet, book_room, provide_name, provide_dates, "
+        "provide_guests, breakfast_yes, breakfast_no, provide_payment, "
+        "confirm_yes, confirm_no, goodbye, thanks, help, fallback) plus 16 "
+        "concierge intents covering places_to_visit, food_recommendations, "
+        "transport_airport, check_in_time, breakfast_hours, wifi, parking, "
+        "amenities, cancellation_policy, pets, currency_info, tipping, "
+        "language, hotel_contact, neighborhood, emergency, and room_types.",
         body))
     story.append(Paragraph(
-        "<b>Domain entities:</b> "
-        "<i>Booking{name, checkin, checkout, roomType, roomRate, guests, "
-        "breakfast, payment, paymentConfirmed, booking_id, status, total_eur}</i> · "
-        "<i>RoomType{id, name, rate, blurb}</i> · <i>Availability(date) → "
-        "{free | peak-full | guest-booked}</i>.",
+        "<b>Domain entities:</b> Booking (name, check-in, check-out, room "
+        "type, room rate, guests, breakfast, payment, payment confirmed, "
+        "booking id, status, total in EUR), RoomType (id, name, rate, short "
+        "description) and Availability, which maps a date to one of three "
+        "states: free, peak-full, or guest-booked.",
         body))
     story.append(Paragraph(
-        "<b>Persistence layers:</b> <i>localStorage</i> holds confirmed bookings "
-        "(global to the device, used by the CEO admin); <i>sessionStorage</i> "
-        "holds the current guest's booking IDs so booking.html only shows that "
-        "guest's reservation. CEO password is stored in sessionStorage with "
-        "key <code>birol.admin.session</code>.",
+        "<b>Storage:</b> localStorage holds the list of confirmed bookings "
+        "(used by the admin page); sessionStorage holds the booking IDs of "
+        "the current visit so the receipt page (booking.html) only shows the "
+        "current guest's bookings. The admin login flag is also kept in "
+        "sessionStorage.",
         body))
 
     # ------------------- Workplan + Risks ------------------- #
@@ -770,16 +769,16 @@ def build_pdf(figs: dict[str, Path]) -> None:
     plan = [
         [CH("Stage"), CH("Output"), CH("Status")],
         [C("Conception (this document)"),
-         C("1-page+ concept · UML diagrams · framework choice"),
+         C("Concept text, UML diagrams, framework choice"),
          C("this submission")],
         [C("Development"),
-         C("Working chatbot · 14 intents · slot FSM · UI · iOS shell"),
+         C("Working chatbot, 30 intents, slot machine, UI, iOS shell"),
          C("complete")],
         [C("Reflection"),
-         C("10-slide presentation · hyperlinks · screenshots"),
+         C("10-slide development presentation"),
          C("in progress")],
         [C("Finalization"),
-         C("2-page abstract · zip with all files · re-submitted Phase 1 + 2"),
+         C("2-page abstract, zip of all files, Phase 1 and 2 with corrections"),
          C("pending feedback")],
     ]
     pt = Table(plan, colWidths=[4.0 * cm, 8.2 * cm, 4.3 * cm])
@@ -802,26 +801,27 @@ def build_pdf(figs: dict[str, Path]) -> None:
 
     risks = [
         [CH("Risk"), CH("Impact"), CH("Mitigation")],
-        [C("Bag-of-words misses paraphrases"),
-         C("User feels unheard"),
-         C("Soft-fall fallback always offers Help + Book chips; "
-           "~30 patterns/intent on average")],
-        [C("Stale browser cache after deploy"),
+        [C("Bag-of-words classifier misses paraphrases"),
+         C("User feels not understood"),
+         C("Fallback reply offers a chip menu (Help, Book a "
+           "room) so the user can continue without typing")],
+        [C("Stale browser cache after a new deploy"),
          C("Users see old UI"),
-         C("<code>?v=</code> query bust on every asset · "
-           "<code>meta no-cache</code> on every HTML")],
-        [C("Receipt visible to wrong user"),
+         C("<code>?v=</code> version on every asset URL plus "
+           "<code>no-cache</code> meta tag on every HTML page")],
+        [C("Receipt visible to a different guest"),
          C("Privacy issue"),
-         C("sessionStorage tag → booking.html only shows "
-           "the current session's bookings")],
-        [C("CEO password is client-side"),
+         C("Booking IDs are tagged in sessionStorage so the "
+           "receipt page only shows the current visit")],
+        [C("Admin password is checked in the browser"),
          C("Easy to bypass"),
-         C("Documented as a soft gate; for prototype "
-           "assessment only")],
-        [C("No backend → no global view of all bookings"),
+         C("Documented as a soft gate, used only for the "
+           "prototype")],
+        [C("No backend, no shared view of all bookings"),
          C("Architecture limit"),
-         C("CEO sees only this-device bookings; future work "
-           "could swap to Firestore")],
+         C("Admin sees only the bookings made on the same "
+           "device; a real backend (e.g. Firestore) could be "
+           "added later")],
     ]
     rt = Table(risks, colWidths=[5.0 * cm, 2.8 * cm, 8.7 * cm])
     rt.setStyle(TableStyle([
@@ -844,37 +844,37 @@ def build_pdf(figs: dict[str, Path]) -> None:
     story.append(Paragraph("13. AI ethics and sustainability", h2))
     story.append(Paragraph(
         "<b>Privacy.</b> No personal data leaves the user's device. There are "
-        "no analytics, no third-party trackers, no server-side logs. All NLU "
-        "runs in the browser; the chat transcript and the booking record are "
-        "kept in localStorage. The CEO admin can be cleared by deleting that "
-        "store. ",
+        "no analytics, no third-party trackers and no server-side logs. The "
+        "NLU runs in the browser, and the chat transcript plus the booking "
+        "are kept in the browser's local storage. The user can clear the "
+        "data by clearing site data in the browser settings.",
         body))
     story.append(Paragraph(
-        "<b>Inclusivity.</b> Quick-reply chips reduce typing for non-native "
-        "English speakers; the iridescent design respects "
-        "<code>prefers-reduced-motion</code> (shooting stars freeze for users "
-        "who set the system flag). All key controls are reachable by tab and "
-        "have explicit ARIA labels.",
+        "<b>Inclusivity.</b> Quick-reply chips reduce typing for users who "
+        "are not comfortable writing in English. The shooting-star background "
+        "respects the <code>prefers-reduced-motion</code> setting and stops "
+        "animating for users who request reduced motion. All controls are "
+        "reachable with the keyboard and have ARIA labels.",
         body))
     story.append(Paragraph(
-        "<b>Transparency.</b> The card-form is explicitly marked as a demo "
-        "(<i>'⚠ Demo only — your card is not actually charged.'</i>). The bot "
-        "openly refuses off-topic questions instead of hallucinating ('I focus "
-        "on Birol Hotel and Istanbul…').",
+        "<b>Transparency.</b> The card form is clearly labelled as a demo "
+        "('Demo only, your card is not actually charged.'). When a question "
+        "is outside the chatbot's scope, the bot says so and points to the "
+        "Help menu instead of guessing.",
         body))
     story.append(Paragraph(
-        "<b>Sustainability.</b> Zero-backend means zero idle servers. GitHub "
-        "Pages is served from edge caches. Each page is &lt; 50 kB before "
-        "fonts, so the carbon footprint per session is negligible compared to "
-        "a typical hotel website.",
+        "<b>Sustainability.</b> The project does not use a backend, so there "
+        "are no idle servers. GitHub Pages is served from a content delivery "
+        "network. Each page is below 50 kB before fonts, which makes the "
+        "energy use per session very low compared to a typical hotel website.",
         body))
 
     # ------------------- Footer note ------------------- #
     story.append(Spacer(1, 6))
     story.append(Paragraph(
-        "<i>Submitted in fulfilment of the Conception phase per the portfolio brief "
-        "(IU CSEMAIPAIUC01). The Development presentation (Phase 2) and final "
-        "abstract + product zip (Phase 3) follow the same naming convention.</i>",
+        "<i>Submitted for the Conception phase of the portfolio "
+        "(IU CSEMAIPAIUC01). The Phase 2 development presentation and the "
+        "Phase 3 abstract follow the same naming convention.</i>",
         ParagraphStyle("foot", parent=body, fontSize=8.5,
                        textColor=colors.HexColor("#666"),
                        alignment=TA_CENTER)))
@@ -885,9 +885,9 @@ def build_pdf(figs: dict[str, Path]) -> None:
         canv.setFillColor(colors.HexColor("#666"))
         canv.setFont("Helvetica", 8)
         canv.drawRightString(A4[0] - 2 * cm, 1 * cm,
-                             f"Phase 1 — Concept  ·  Page {canv.getPageNumber()}")
+                             f"Phase 1, Concept   |   Page {canv.getPageNumber()}")
         canv.drawString(2 * cm, 1 * cm,
-                        "Birol-Egemen · 12345678 · AIUseCase · Hotel · Concept")
+                        "Birol-Egemen | 10254279 | AIUseCase | Hotel | Concept")
         canv.setStrokeColor(colors.HexColor(ACCENT_DARK))
         canv.setLineWidth(0.6)
         canv.line(2 * cm, 1.4 * cm, A4[0] - 2 * cm, 1.4 * cm)
