@@ -1,0 +1,118 @@
+/* ===========================================================
+   Birol Hotel — Find your booking page
+   Theme: Liquid glass; reuses booking.css for the result card
+   =========================================================== */
+
+.find-card {
+  position: relative;
+  padding: 1.4rem 1.2rem 1.2rem;
+  border-radius: 18px;
+  border: 1px solid var(--glass-border);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.015) 100%),
+    var(--glass-tint);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 12px 30px -8px rgba(0, 0, 0, 0.55);
+  overflow: hidden;
+  animation: fadein 0.45s ease-out;
+}
+.find-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 10%; right: 10%;
+  height: 35%;
+  background: radial-gradient(ellipse at 50% 0%,
+    rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+  filter: blur(6px);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.8rem;
+}
+.field-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.field-input {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border-2);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+  backdrop-filter: blur(14px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.field-input:focus-within {
+  border-color: rgba(255, 255, 255, 0.55);
+  background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025));
+}
+.field-input .prefix {
+  padding: 0.85rem 0.2rem 0.85rem 1rem;
+  color: var(--muted);
+  font-family: "SF Mono", Menlo, monospace;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+}
+.field-input input {
+  flex: 1;
+  padding: 0.85rem 1rem 0.85rem 0;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-family: "SF Mono", Menlo, monospace;
+  font-size: 0.95rem;
+  letter-spacing: 0.16em;
+  outline: none;
+  text-transform: uppercase;
+}
+.field-input input::placeholder { color: rgba(255, 255, 255, 0.3); letter-spacing: 0.16em; }
+
+.field-input input.shake { animation: shake 0.42s ease; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-6px); }
+  40%      { transform: translateX(5px); }
+  60%      { transform: translateX(-3px); }
+  80%      { transform: translateX(2px); }
+}
+
+.find-card .btn-primary {
+  width: 100%;
+  padding: 0.85rem 1.2rem;
+  font-size: 0.95rem;
+}
+
+.find-error {
+  margin-top: 0.6rem;
+  color: #ffb7b7;
+  font-size: 0.82rem;
+  min-height: 1em;
+  text-align: center;
+}
+
+.hint {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+.hint code {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: 6px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}

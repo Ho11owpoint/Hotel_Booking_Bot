@@ -172,6 +172,18 @@ body::before {
     linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.04));
   transform: translateY(-1px);
 }
+.find-link { margin-left: 0; }
+.landing-header { gap: 0.5rem; }
+.landing-header .ceo-login { padding: 0.4rem 0.7rem; font-size: 0.7rem; }
+.landing-header .ceo-login span { white-space: nowrap; }
+@media (max-width: 430px) {
+  .landing-header .ceo-login span { display: none; }
+  .landing-header .ceo-login {
+    padding: 0.42rem;
+    width: 32px;
+    justify-content: center;
+  }
+}
 
 /* ---------- Hotel hero view ---------- */
 .hotel-view {

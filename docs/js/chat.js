@@ -11,6 +11,7 @@ const input    = document.getElementById("input");
 const sendBtn  = form.querySelector("button[type=submit]");
 const resetBtn = document.getElementById("resetBtn");
 const calSlot  = document.getElementById("calendarSlot");
+const cardSlot = document.getElementById("cardSlot");
 
 let bot = null;
 let unavailable = new Set();
@@ -112,6 +113,8 @@ async function sendMessage(text) {
     addMessage("bot", reply, actions);
     if (bot.session.currentSlot === "dates") openCalendar();
     else                                     closeCalendar();
+    if (bot.session.currentSlot === "payment_card") openCardForm();
+    else                                            closeCardForm();
   } catch (err) {
     hideTyping();
     addMessage("bot", "Sorry — something went wrong. Please try again.");
@@ -138,6 +141,7 @@ resetBtn.addEventListener("click", () => {
   const g = bot.greet();
   addMessage("bot", g.reply, g.actions);
   closeCalendar();
+  closeCardForm();
   input.focus();
 });
 
@@ -303,4 +307,80 @@ function rangeCrossesFull(a, b) {
     step.setDate(step.getDate() + 1);
   }
   return false;
+}
+
+// ----------------------------------------------------------------
+// Card payment form
+// ----------------------------------------------------------------
+function openCardForm() {
+  if (!bot) return;
+  const b = bot.session.booking;
+  // Total to charge — recompute on the live Booking instance.
+  const total = typeof b.totalCost === "function" ? b.totalCost() : 0;
+  const name  = (b.name || "GUEST").toUpperCase();
+  const last4 = "7890";   // last 4 of the dummy card
+  const brand = b.payment === "Debit card" ? "Debit" : "Credit";
+
+  cardSlot.innerHTML = `
+    <div class="card-panel">
+      <div class="cc">
+        <div class="cc-top">
+          <span class="cc-brand">${brand}</span>
+          <span class="cc-chip" aria-hidden="true"></span>
+        </div>
+        <div class="cc-number">
+          <input type="text" value="1234 5678 90" readonly aria-label="Card number">
+        </div>
+        <div class="cc-row">
+          <div class="cc-field">
+            <label>Cardholder</label>
+            <input type="text" value="${name}" readonly aria-label="Cardholder">
+          </div>
+          <div class="cc-field cc-field-sm">
+            <label>Expiry</label>
+            <input type="text" value="12/28" readonly aria-label="Expiry">
+          </div>
+          <div class="cc-field cc-field-sm">
+            <label>CVV</label>
+            <input type="text" value="•••" readonly aria-label="CVV">
+          </div>
+        </div>
+        <div class="cc-issuer">Birol Hotel · ${b.payment}</div>
+      </div>
+
+      <p class="card-note">
+        ⚠️ Demo only — your card is not actually charged.
+        Last 4 digits: ${last4}.
+      </p>
+
+      <div class="card-actions">
+        <button class="cal-btn ghost"   data-act="card-cancel">Use a different method</button>
+        <button class="cal-btn primary" data-act="card-pay">Pay €${total}</button>
+      </div>
+    </div>
+  `;
+  cardSlot.classList.add("open");
+  cardSlot.setAttribute("aria-hidden", "false");
+  messages.scrollTop = messages.scrollHeight;
+
+  cardSlot.querySelector('[data-act="card-pay"]').addEventListener("click", () => {
+    closeCardForm();
+    sendMessage("pay");
+  });
+  cardSlot.querySelector('[data-act="card-cancel"]').addEventListener("click", () => {
+    // Clear the chosen payment and re-emit the payment prompt directly.
+    bot.session.booking.payment = null;
+    bot.session.booking.paymentConfirmed = false;
+    closeCardForm();
+    addMessage("user", "(use a different payment method)");
+    const next = bot.promptForNextSlot();   // → "payment" again
+    addMessage("bot", next.reply, next.actions);
+    input.focus();
+  });
+}
+
+function closeCardForm() {
+  cardSlot.classList.remove("open");
+  cardSlot.setAttribute("aria-hidden", "true");
+  cardSlot.innerHTML = "";
 }

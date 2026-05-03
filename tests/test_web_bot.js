@@ -161,6 +161,7 @@ test("booking flow still finishes normally after a mid-flow concierge question",
   bot.respond("2");
   bot.respond("yes");
   bot.respond("credit card");
+  bot.respond("pay");             // card form Pay click
   const done = bot.respond("yes");
   assert(/confirmed/i.test(done.reply));
   assert(/BH-/.test(done.reply));
@@ -169,41 +170,39 @@ test("booking flow still finishes normally after a mid-flow concierge question",
 // ------------------------------------------------------------------
 section("Happy path with the new room_type slot");
 
-test("book a room → Deluxe → yes; total = 4×180 + 2×4×10 = €800", () => {
+test("book a room → Deluxe → card → pay → yes; total = €800", () => {
   const bot = fresh();
   bot.respond("hi");
   bot.respond("Jane Doe");
   bot.respond("2026-05-10 to 2026-05-14");
 
-  // Room slot
-  const roomPrompt = bot.respond("hello");  // unmatched filler — should fallback hint
+  // Room slot — fallback hint when an unmatched word is given
+  const roomPrompt = bot.respond("hello");
   assert(/room/i.test(roomPrompt.reply || ""), "should still ask for a room");
 
   bot.respond("Deluxe Room");
-  // Now guests slot
   bot.respond("2");
-  // Breakfast slot
-  bot.respond("yes");
-  // Payment slot
-  bot.respond("credit card");
+  bot.respond("yes");                  // breakfast
+  bot.respond("credit card");          // payment slot
 
-  // Confirm slot — summary shows the total
-  const summary = bot.session.booking.summary
-    ? bot.session.booking.summary()
-    : "";
-  // (We can't read summary from outside, but we can check the confirm
-  //  reply just before saving by checking the saved record after yes.)
+  // Now in the new payment_card slot — summary is NOT yet shown.
+  assert.strictEqual(bot.session.currentSlot, "payment_card");
+
+  bot.respond("pay");                  // simulates the card-form Pay button
+  // Now in confirm slot, summary visible
+  assert.strictEqual(bot.session.currentSlot, "confirm");
 
   const done = bot.respond("yes");
   assert(/confirmed/i.test(done.reply));
+
   const saved = window.BirolBot.getBookings();
   assert.strictEqual(saved.length, 1);
   const b = saved[0];
   assert.strictEqual(b.name,     "Jane Doe");
   assert.strictEqual(b.roomType, "Deluxe Room");
   assert.strictEqual(b.roomRate, 180);
-  // 4 nights × €180 + 2 guests × 4 nights × €10 = 720 + 80 = €800
   assert.strictEqual(b.total_eur, 800);
+  assert.strictEqual(b.paymentConfirmed, true);
 });
 
 // ------------------------------------------------------------------
@@ -221,7 +220,7 @@ test("BREAKFAST surcharge is exposed at €10", () => {
   assert.strictEqual(window.BirolBot.BREAKFAST_PER_GUEST_PER_NIGHT, 10);
 });
 
-test("Bosphorus suite, no breakfast: 3×420 = €1260", () => {
+test("Bosphorus suite, no breakfast, debit card: 3×420 = €1260", () => {
   const bot = fresh();
   bot.respond("book a room");
   bot.respond("Alice Wong");
@@ -229,13 +228,15 @@ test("Bosphorus suite, no breakfast: 3×420 = €1260", () => {
   bot.respond("Bosphorus Suite");
   bot.respond("1");
   bot.respond("no");                          // no breakfast
-  bot.respond("debit card");
-  bot.respond("yes");
+  bot.respond("debit card");                  // → payment_card
+  bot.respond("pay");                         // card form Pay click
+  bot.respond("yes");                         // confirm summary
   const b = window.BirolBot.getBookings()[0];
   assert.strictEqual(b.roomType, "Bosphorus Suite");
   assert.strictEqual(b.roomRate, 420);
   assert.strictEqual(b.breakfast, false);
   assert.strictEqual(b.total_eur, 1260);
+  assert.strictEqual(b.paymentConfirmed, true);
 });
 
 test("room slot prompt offers chips for all 4 room types", () => {
@@ -287,7 +288,7 @@ test("payment prompt offers all three payment chips", () => {
     ["Credit card", "Debit card", "Pay at hotel"]);
 });
 
-test("confirm summary shows the **Total** line", () => {
+test("confirm summary (after card Pay) shows the **Total** line", () => {
   const bot = fresh();
   bot.respond("book a room");
   bot.respond("Jane Doe");
@@ -295,7 +296,8 @@ test("confirm summary shows the **Total** line", () => {
   bot.respond("Deluxe Room");
   bot.respond("2");
   bot.respond("yes");
-  const r = bot.respond("credit card");      // → confirm prompt
+  bot.respond("credit card");                // → payment_card
+  const r = bot.respond("pay");              // → confirm prompt
   assert(/\*\*Total: €800\*\*/.test(r.reply),
          "summary should include **Total: €800** line");
   assert(/Pricing/i.test(r.reply), "summary should have a Pricing block");
@@ -313,6 +315,7 @@ test("getMyBookings returns only bookings made in this session", () => {
   bot.respond("2");
   bot.respond("yes");
   bot.respond("credit card");
+  bot.respond("pay");
   bot.respond("yes");
 
   // Now simulate "another guest" by clearing sessionStorage but
@@ -336,11 +339,97 @@ test("getMyBookings returns my booking inside the same session", () => {
   bot.respond("2");
   bot.respond("yes");
   bot.respond("credit card");
+  bot.respond("pay");
   bot.respond("yes");
 
   const mine = window.BirolBot.getMyBookings();
   assert.strictEqual(mine.length, 1);
   assert.strictEqual(mine[0].name, "Jane Doe");
+});
+
+// ------------------------------------------------------------------
+section("Card payment flow");
+
+test("Selecting credit card moves to payment_card, NOT confirm", () => {
+  const bot = fresh();
+  bot.respond("book a room");
+  bot.respond("Test Guest");
+  bot.respond("2026-05-10 to 2026-05-14");
+  bot.respond("Standard Room");
+  bot.respond("2");
+  bot.respond("yes");
+  const r = bot.respond("credit card");
+  assert.strictEqual(bot.session.currentSlot, "payment_card");
+  assert(/pre-filled/i.test(r.reply), "should mention pre-filled card");
+  assert(/Pay/.test(r.reply));
+});
+
+test("Pay-at-hotel SKIPS the card form (straight to confirm)", () => {
+  const bot = fresh();
+  bot.respond("book a room");
+  bot.respond("Test Guest");
+  bot.respond("2026-05-10 to 2026-05-14");
+  bot.respond("Standard Room");
+  bot.respond("2");
+  bot.respond("yes");
+  const r = bot.respond("pay at hotel");
+  assert.strictEqual(bot.session.currentSlot, "confirm");
+  assert(/Booking summary/i.test(r.reply));
+  assert(/Total/i.test(r.reply));
+});
+
+test("'pay' message at payment_card slot advances to confirm", () => {
+  const bot = fresh();
+  bot.respond("book a room");
+  bot.respond("Test Guest");
+  bot.respond("2026-05-10 to 2026-05-14");
+  bot.respond("Standard Room");
+  bot.respond("2");
+  bot.respond("yes");
+  bot.respond("credit card");
+  assert.strictEqual(bot.session.currentSlot, "payment_card");
+  bot.respond("pay");
+  assert.strictEqual(bot.session.currentSlot, "confirm");
+  assert.strictEqual(bot.session.booking.paymentConfirmed, true);
+});
+
+test("Without 'pay', confirm is unreachable from payment_card", () => {
+  const bot = fresh();
+  bot.respond("book a room");
+  bot.respond("Test Guest");
+  bot.respond("2026-05-10 to 2026-05-14");
+  bot.respond("Standard Room");
+  bot.respond("2");
+  bot.respond("yes");
+  bot.respond("credit card");
+  // 'yes' here should NOT save the booking (we haven't paid)
+  bot.respond("yes");
+  assert.strictEqual(window.BirolBot.getBookings().length, 0);
+});
+
+// ------------------------------------------------------------------
+section("Find by reference (getBooking)");
+
+test("getBooking with valid id returns the booking", () => {
+  const bot = fresh();
+  bot.respond("book a room");
+  bot.respond("Egemen Birol");
+  bot.respond("2026-05-10 to 2026-05-14");
+  bot.respond("Deluxe Room");
+  bot.respond("2");
+  bot.respond("yes");
+  bot.respond("credit card");
+  bot.respond("pay");
+  bot.respond("yes");
+  const id = window.BirolBot.getBookings()[0].booking_id;
+  const found = window.BirolBot.getBooking(id);
+  assert(found, "should find by id");
+  assert.strictEqual(found.name, "Egemen Birol");
+});
+
+test("getBooking with bad id returns null (no error thrown)", () => {
+  const found = window.BirolBot.getBooking("BH-NOPE9999");
+  assert.strictEqual(found, null);
 });
 
 // ------------------------------------------------------------------

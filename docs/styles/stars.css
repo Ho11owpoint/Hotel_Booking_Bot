@@ -44,22 +44,25 @@
   );
 }
 
-/* Five stars, each with its own start position + timing.
-   Streaks travel from upper-right toward lower-left, like a meteor
-   shower. Long delays mean the screen is mostly quiet, with one
-   shooting through every few seconds. */
-.stars span:nth-child(1) { top:  8%; left: 96%; animation-delay:  0s;  animation-duration:  7s; }
-.stars span:nth-child(2) { top: 22%; left: 90%; animation-delay:  4s;  animation-duration: 11s; }
-.stars span:nth-child(3) { top: 45%; left: 88%; animation-delay:  9s;  animation-duration:  9s; }
-.stars span:nth-child(4) { top: 65%; left: 95%; animation-delay: 13s;  animation-duration: 12s; }
-.stars span:nth-child(5) { top: 33%; left: 80%; animation-delay: 18s;  animation-duration: 10s; }
+/* Nine stars on tight, staggered timings. Each animation cycle is
+   short (4–6 s) and the visible portion is widened to ~50% of the
+   cycle, so on average ~2–3 stars are streaking at any moment. */
+.stars span:nth-child(1) { top:  6%; left: 96%; animation-delay:  0.0s; animation-duration: 4.5s; }
+.stars span:nth-child(2) { top: 18%; left: 92%; animation-delay:  0.8s; animation-duration: 5.5s; }
+.stars span:nth-child(3) { top: 30%; left: 88%; animation-delay:  1.6s; animation-duration: 4.0s; }
+.stars span:nth-child(4) { top: 42%; left: 95%; animation-delay:  2.4s; animation-duration: 6.0s; }
+.stars span:nth-child(5) { top: 54%; left: 84%; animation-delay:  3.2s; animation-duration: 5.0s; }
+.stars span:nth-child(6) { top: 66%; left: 90%; animation-delay:  4.0s; animation-duration: 4.8s; }
+.stars span:nth-child(7) { top: 78%; left: 96%; animation-delay:  4.8s; animation-duration: 5.2s; }
+.stars span:nth-child(8) { top: 12%; left: 78%; animation-delay:  5.6s; animation-duration: 4.2s; }
+.stars span:nth-child(9) { top: 48%; left: 80%; animation-delay:  6.4s; animation-duration: 5.6s; }
 
 @keyframes shoot {
-  0%   { transform: translate3d(0, 0, 0);            opacity: 0; }
-  3%   {                                             opacity: 0.85; }
-  20%  {                                             opacity: 0.85; }
-  35%  { transform: translate3d(-560px, 320px, 0);   opacity: 0; }
-  100% { transform: translate3d(-560px, 320px, 0);   opacity: 0; }
+  0%   { transform: translate3d(0, 0, 0);            opacity: 0;   }
+  6%   {                                             opacity: 0.9; }
+  60%  {                                             opacity: 0.9; }
+  92%  { transform: translate3d(-560px, 320px, 0);   opacity: 0;   }
+  100% { transform: translate3d(-560px, 320px, 0);   opacity: 0;   }
 }
 
 /* Respect users who explicitly want less motion */

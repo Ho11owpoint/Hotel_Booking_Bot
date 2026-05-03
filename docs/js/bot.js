@@ -352,14 +352,15 @@ class Booking {
     this.name = null;
     this.checkin = null;
     this.checkout = null;
-    this.roomType = null;     // human-readable, e.g. "Deluxe Room"
-    this.roomRate = null;     // EUR per night
+    this.roomType = null;       // human-readable, e.g. "Deluxe Room"
+    this.roomRate = null;       // EUR per night
     this.guests = null;
     this.breakfast = null;
     this.payment = null;
+    this.paymentConfirmed = false;  // true after card form 'Pay' or pay-at-hotel
     this.booking_id = null;
     this.status = "draft";
-    this.total_eur = null;    // populated on save
+    this.total_eur = null;      // populated on save
   }
 
   nights() {
@@ -460,6 +461,10 @@ class BookingConversation {
     if (!b.guests) return "guests";
     if (b.breakfast === null) return "breakfast";
     if (!b.payment) return "payment";
+    // Card payments require a 'pay' click on the card form;
+    // pay-at-hotel skips this step.
+    const isCard = b.payment === "Credit card" || b.payment === "Debit card";
+    if (isCard && !b.paymentConfirmed) return "payment_card";
     return "confirm";
   }
 }
@@ -662,9 +667,10 @@ We look forward to welcoming you to ${HOTEL_NAME} on ${ci}. ` +
       case "room_type": return "**Which room type** would you like — Standard, Deluxe, King Suite, or Bosphorus Suite?";
       case "guests":    return "**How many guests** will be staying?";
       case "breakfast": return `Would you like to **include breakfast** (+€${BREAKFAST_PER_GUEST_PER_NIGHT}/guest/night)? (yes / no)`;
-      case "payment":   return "How would you like to pay: **credit card**, **debit card**, or **pay at the hotel**?";
-      case "confirm":   return b.summary();
-      default:          return "How may I help you?";
+      case "payment":      return "How would you like to pay: **credit card**, **debit card**, or **pay at the hotel**?";
+      case "payment_card": return `Please click **Pay** on the card form below to charge €${b.totalCost ? b.totalCost() : 0}.`;
+      case "confirm":      return b.summary();
+      default:             return "How may I help you?";
     }
   }
 
@@ -706,7 +712,19 @@ We look forward to welcoming you to ${HOTEL_NAME} on ${ci}. ` +
     }
     if (!b.payment && (this.session.currentSlot === "payment" || this.session.currentSlot === "breakfast")) {
       const p = extractPayment(message);
-      if (p) { b.payment = p; filled = true; }
+      if (p) {
+        b.payment = p;
+        // Pay-at-hotel needs no card form, so it confirms immediately.
+        if (p === "Pay at hotel") b.paymentConfirmed = true;
+        filled = true;
+      }
+    }
+    // Card form 'Pay' button sends the literal word 'pay'.
+    if (b.payment && !b.paymentConfirmed && this.session.currentSlot === "payment_card") {
+      if (/\b(pay|confirm|charge|proceed)\b/i.test(message)) {
+        b.paymentConfirmed = true;
+        filled = true;
+      }
     }
     return filled;
   }
@@ -777,6 +795,16 @@ We look forward to welcoming you to ${HOTEL_NAME} on ${ci}. ` +
           ],
         };
 
+      case "payment_card":
+        // Total is computed up to this point so the Pay button can show
+        // the exact amount. The chat UI renders the actual card form;
+        // this reply is just the bubble that introduces it.
+        return {
+          reply:
+            `Please review your **${b.payment}** below — the details are ` +
+            "pre-filled for this demo. Click **Pay** to complete the booking.",
+        };
+
       case "confirm":
         return { reply: b.summary() };
     }
@@ -791,6 +819,7 @@ We look forward to welcoming you to ${HOTEL_NAME} on ${ci}. ` +
       guests:    "Could you tell me the number of guests as a digit (e.g. *2*)?",
       breakfast: `Would you like breakfast (+€${BREAKFAST_PER_GUEST_PER_NIGHT}/guest/night)? Please answer *yes* or *no*.`,
       payment:   "Please choose: credit card, debit card, or pay at the hotel.",
+      payment_card: "Click **Pay** on the card form to complete the booking.",
       confirm:   "Shall I confirm the booking? Please answer *yes* or *no*.",
     };
     return hints[this.session.currentSlot] || this.classifier.response("fallback");
